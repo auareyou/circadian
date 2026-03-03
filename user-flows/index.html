@@ -528,12 +528,35 @@
 
   <!-- ========== NORMAL DAY PANEL ========== -->
   <div class="flow-panel" id="panel-normal">
-    <div class="placeholder-panel">
-      <div class="placeholder-box">
-        <div class="icon">☀️</div>
-        <h2>Normal Day Flow</h2>
-        <p>The daily light therapy session flow — alarm, quick check-in, 30-minute session with entertainment, and daily log. Coming up next.</p>
+    <div class="flow-header">
+      <h1>Normal Day — Daily Session</h1>
+      <p>Day 1–14 · Alarm → Check-in → Light session → Dashboard · Est. 45–60 min total</p>
+      <div class="legend-inline">
+        <div class="li"><div class="ld" style="background:#1B7A3D"></div>Physical</div>
+        <div class="li"><div class="ld" style="background:#2563EB"></div>Screen</div>
+        <div class="li"><div class="ld" style="background:#B8700A"></div>User Input</div>
+        <div class="li"><div class="ld" style="background:#7C3AED"></div>Action</div>
+        <div class="li"><div class="ld" style="background:#C0294A"></div>System</div>
+        <div class="li"><div class="ld" style="background:#0E7490"></div>Optional</div>
       </div>
+    </div>
+
+    <div class="card-area">
+      <div class="card-container" id="cards-normal"></div>
+    </div>
+
+    <div class="step-nav" id="stepnav-normal"></div>
+
+    <div class="bottom-nav">
+      <button class="btn btn-back" id="back-normal" onclick="prevStep('normal')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back
+      </button>
+      <span class="step-counter" id="counter-normal"></span>
+      <button class="btn btn-next" id="next-normal" onclick="nextStep('normal')">
+        Next
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
     </div>
   </div>
 
@@ -843,6 +866,299 @@ const flows = {
         { type: "hooked", label: "Hooked · Full Cycle Primed", text: "The alarm is the trigger for tomorrow. Entertainment removes friction from the action. The personalized schedule is the variable reward. The questionnaire and alarm are the investment. The full Hook cycle is loaded and ready for Day 1." }
       ]
     }
+  ],
+  normal: [
+    {
+      phase: "Wake Up",
+      type: "system", typeLabel: "System",
+      title: "Alarm Goes Off",
+      desc: "The iPad alarm fires at the patient's personalized wake time. The alarm screen shows a soft sunrise gradient with two clear options: \"Snooze\" and \"Check In.\"",
+      content: `
+        <div class="data-grid single">
+          <div class="data-item">Alarm fires at personalized wake time (set during onboarding or previous day)</div>
+          <div class="data-item">Screen shows: soft sunrise gradient, current time, two buttons</div>
+          <div class="data-item">Sound: gentle, rising tone — not jarring. Designed for a patient who may be groggy or in pain.</div>
+        </div>
+      `,
+      notes: [
+        { type: "design", label: "UX Guidance", text: "The alarm screen is the first thing the patient sees. It must feel calm, not demanding. Large buttons (minimum 48pt targets), high contrast. The 'Check In' button should be visually heavier than 'Snooze' to gently bias toward the desired action — but snooze must never feel punishing." },
+        { type: "hooked", label: "Hooked · External Trigger", text: "The alarm is the daily external trigger that re-enters the patient into the Hook cycle. It arrives at a predictable time, in a consistent context (waking up), paired with a clear action (tap Check In). The trigger does the heavy lifting — the patient's only job is to respond." }
+      ]
+    },
+    {
+      phase: "Wake Up",
+      type: "action", typeLabel: "User Action",
+      title: "Snooze or Check In",
+      desc: "Patient chooses: tap \"Snooze\" (delays alarm by 15 minutes, allowed once) or tap \"Check In\" to enter the app and begin their morning routine.",
+      content: `
+        <div class="data-grid">
+          <div class="data-item">Tap "Snooze" → alarm silences, reschedules +15 min</div>
+          <div class="data-item">Tap "Check In" → opens app to To-Do view</div>
+          <div class="data-item conditional">Second snooze not allowed — after first snooze, only "Check In" appears</div>
+          <div class="data-item conditional">If alarm is ignored entirely → push notification after 30 min</div>
+        </div>
+      `,
+      notes: [
+        { type: "warn", label: "Edge Case", text: "Only one snooze is allowed. The second alarm shows only 'Check In.' This prevents snooze spirals while still respecting that some patients need a few extra minutes. The 15-minute window is calibrated to keep the session within the therapeutic light window." },
+        { type: "superbetter", label: "SuperBetter · Reducing Friction", text: "The single-snooze design acknowledges human weakness without enabling it. One snooze says 'we understand you're tired.' No snooze at all says 'we don't care.' Infinite snooze says 'this doesn't matter.' One is the respectful middle ground." }
+      ]
+    },
+    {
+      phase: "Morning To-Do",
+      type: "screen", typeLabel: "Screen",
+      title: "Today's Tasks",
+      desc: "The app opens to a simple To-Do list showing two items for today. Tasks are independent — the patient can complete them in any order, but the questionnaire is presented first since it takes only 2 minutes.",
+      content: `
+        <div class="data-grid single">
+          <div class="data-item">1. Daily Check-In — "2 min · 8 quick questions about last night" → status: Not started</div>
+          <div class="data-item">2. Light Session — "Due by [time] · [duration] min" → status: Not started</div>
+        </div>
+        <div class="edge-case" style="margin-top:12px"><strong>What if the patient skips the check-in?</strong><p>Allow it. The light session is the clinically critical action. The check-in is important for data but should never block the session. Show a gentle reminder later.</p></div>
+      `,
+      notes: [
+        { type: "design", label: "UX Guidance", text: "Two items maximum. No long list, no scrolling. Each task shows: title, time estimate, due time (for the session), and a clear 'Start' button. The due time on the light session promotes consistency — it anchors the habit to a specific window." },
+        { type: "hooked", label: "Hooked · Internal Trigger", text: "By day 3–4, the patient should start associating waking up with 'I have two things to do.' The To-Do view is the bridge between the external trigger (alarm) and the internal trigger (morning routine habit). Keep it identical every day so the pattern becomes automatic." }
+      ]
+    },
+    {
+      phase: "Daily Check-In",
+      type: "input", typeLabel: "User Input",
+      title: "Check-In — Sleep & Wake",
+      desc: "First half of the daily questionnaire. Four questions about how the patient slept and how they feel this morning. One question per screen, large inputs, no typing required.",
+      content: `
+        <div class="data-grid single">
+          <div class="data-item">Q1: How are you feeling? → 3 options: Tired / In Between / Rested</div>
+          <div class="data-item">Q2: What time did you go to bed last night? → Time picker (scroll wheel)</div>
+          <div class="data-item">Q3: Did you wake up during the night? → Yes / No toggle</div>
+          <div class="data-item conditional">Q4: How long were you awake? → Minutes slider (only if Q3 = Yes)</div>
+        </div>
+      `,
+      notes: [
+        { type: "design", label: "UX Guidance", text: "One question per screen. Large tap targets for the three-option selector (Tired / In Between / Rested). Use icons alongside text — a tired face, a neutral face, a rested face. No emoji, just simple line illustrations. Progress indicator: '1 of 8' shown subtly at top." },
+        { type: "warn", label: "Senior-First Principle", text: "Time pickers must use scroll wheels, not manual text entry. The 'minutes awake' slider should have preset marks at 5, 10, 15, 30, 45, 60 to reduce precision anxiety. A patient should never feel like they need to remember exact minutes." }
+      ]
+    },
+    {
+      phase: "Daily Check-In",
+      type: "input", typeLabel: "User Input",
+      title: "Check-In — Naps & Morning",
+      desc: "Second half of the daily questionnaire. Four questions about wake time and yesterday's nap habits. Conditional questions appear only when relevant.",
+      content: `
+        <div class="data-grid single">
+          <div class="data-item">Q5: What time did you wake up this morning? → Time picker (scroll wheel)</div>
+          <div class="data-item">Q6: Did you take a nap yesterday? → Yes / No toggle</div>
+          <div class="data-item conditional">Q7: How long was the nap? → Minutes slider (only if Q6 = Yes)</div>
+          <div class="data-item conditional">Q8: What time did you nap? → Time picker (only if Q6 = Yes)</div>
+        </div>
+      `,
+      notes: [
+        { type: "design", label: "UX Guidance", text: "Same interaction patterns as the first half. The conditional questions (Q7, Q8) should animate in smoothly when the patient selects 'Yes' on Q6 — no page reload, no jarring jump. If they toggle back to 'No,' the fields collapse gracefully." },
+        { type: "hooked", label: "Hooked · Investment", text: "Each daily check-in is a micro-investment. The patient is depositing data that makes their treatment more personalized over time. Frame the completion moment as: 'Check-in complete' with a single checkmark — not a celebration, just a calm acknowledgment." }
+      ]
+    },
+    {
+      phase: "Content Selection",
+      type: "screen", typeLabel: "Screen",
+      title: "Choose Your Content",
+      desc: "Patient selects what to watch or listen to during their light session. Pre-loaded apps appear as large tiles. The goal: remove every possible barrier between 'sitting down' and 'starting the session.'",
+      content: `
+        <div class="data-grid triple">
+          <div class="data-item" style="text-align:center">Netflix</div>
+          <div class="data-item" style="text-align:center">YouTube</div>
+          <div class="data-item" style="text-align:center">Instagram</div>
+          <div class="data-item" style="text-align:center">Facebook</div>
+          <div class="data-item" style="text-align:center">Spotify</div>
+          <div class="data-item" style="text-align:center">Other</div>
+        </div>
+        <div class="edge-case" style="margin-top:12px"><strong>What if no apps are connected?</strong><p>Show the connection flow from onboarding. After connecting, return here. Never block the session — offer a 'Continue without content' fallback.</p></div>
+      `,
+      notes: [
+        { type: "design", label: "UX Guidance", text: "Large tiles, app icons, one tap to launch. The selected content opens in a split view or embedded player — the patient should not leave the Circadian app context. A 'Last watched' shortcut at the top reduces daily decision fatigue." },
+        { type: "superbetter", label: "SuperBetter · Reward Bundling", text: "This is the core behavioral insight of Circadian: pair a thing the patient must do (light therapy) with a thing they want to do (watch a show). The entertainment is the variable reward. Every session becomes 'Netflix time' rather than 'treatment time.'" }
+      ]
+    },
+    {
+      phase: "Light Session",
+      type: "action", typeLabel: "User Action",
+      title: "Start Session",
+      desc: "Patient taps play. The light device activates, content begins, and the session timer starts counting up. This is the moment the therapeutic value begins.",
+      content: `
+        <div class="data-grid single">
+          <div class="data-item">Patient taps "Start Session" → light device activates</div>
+          <div class="data-item">Content begins playing in the main area</div>
+          <div class="data-item">Timer appears subtly at the top: counting up toward session goal</div>
+          <div class="data-item">Device brightness adjusts based on therapeutic protocol</div>
+        </div>
+      `,
+      notes: [
+        { type: "design", label: "UX Guidance", text: "The 'Start Session' button should be the largest, most obvious element on screen. After tapping, it transitions smoothly into the session view — content fills most of the screen, timer is small and unobtrusive at the top. The patient's focus should be on their show, not on the therapy." },
+        { type: "warn", label: "Critical Design Decision", text: "The timer counts UP, not down. Counting down creates anxiety ('I still have 23 minutes left'). Counting up creates accomplishment ('I've already done 12 minutes'). The total target should be visible but secondary — e.g., small text: '12 of 45 min'." }
+      ]
+    },
+    {
+      phase: "Light Session",
+      type: "system", typeLabel: "System",
+      title: "Look-Away Detection",
+      desc: "If the system detects the patient has looked away from the device, it initiates a graduated response: visual warning, then a countdown popup. Designed to be helpful, not punitive.",
+      content: `
+        <div class="data-grid single">
+          <div class="data-item">Stage 1: Frame goes red + haptic buzz → patient looks back → session resumes immediately</div>
+          <div class="data-item">Stage 2: Patient stays away → popup appears with short countdown (e.g., 30 seconds)</div>
+          <div class="data-item">Popup message: "Looks like you stepped away. Return to continue your session."</div>
+          <div class="data-item conditional">If countdown expires → session pauses, must tap "Resume" to restart timer</div>
+          <div class="data-item conditional">If patient is away too long (e.g., >5 min) → session expires, must restart from the beginning</div>
+        </div>
+        <div class="edge-case" style="margin-top:12px"><strong>What about bathroom breaks?</strong><p>A "Pause" button should be available in the session controls. Pausing is intentional and respects the patient's autonomy. Look-away detection handles unintentional departures only.</p></div>
+        <div class="edge-case"><strong>What about false positives?</strong><p>Glancing at a phone, sneezing, or adjusting position should not trigger detection. Only sustained absence (5+ seconds of no face detected) triggers Stage 1.</p></div>
+      `,
+      notes: [
+        { type: "design", label: "UX Guidance", text: "The red frame border must be noticeable but not alarming. Think 'gentle nudge,' not 'error state.' The haptic should be a soft double-tap, not a harsh buzz. The popup countdown should use large numbers and a clear 'I'm here' button." },
+        { type: "warn", label: "Graceful Recovery", text: "The patient stepped away — maybe they had to answer the door, maybe they felt nauseous. The app's job is to welcome them back, not penalize them. Tone: 'Welcome back — ready to continue?' not 'Session interrupted.'" },
+        { type: "hooked", label: "Hooked · Maintaining the Action", text: "Look-away detection protects the therapeutic value of the session without breaking the reward experience. The patient needs to stay in front of the light for the therapy to work, but the enforcement should feel like guardrails on a road, not a cage." }
+      ]
+    },
+    {
+      phase: "Light Session",
+      type: "system", typeLabel: "System",
+      title: "Milestone Markers (Every 15 min)",
+      desc: "At every 15-minute interval (15, 30, 45, 60 min), the patient receives a subtle acknowledgment: a soft sound, a gentle haptic, and a brief encouraging message that appears and fades without interrupting content.",
+      content: `
+        <div class="summary-list">
+          <div class="summary-row"><span class="sl">15 min</span><span class="sv">Soft chime + haptic. "15 minutes — off to a good start."</span></div>
+          <div class="summary-row"><span class="sl">30 min</span><span class="sv">Soft chime + haptic. "Halfway there."</span></div>
+          <div class="summary-row"><span class="sl">45 min</span><span class="sv">Soft chime + haptic. "45 minutes — almost done."</span></div>
+          <div class="summary-row"><span class="sl">60 min</span><span class="sv">Completion sound (distinct). "Session complete."</span></div>
+        </div>
+        <div class="edge-case" style="margin-top:12px"><strong>What if the session target is less than 60 min?</strong><p>Milestones adapt to the prescribed duration. For a 30-min session, markers at 10, 20, and 30 min. The final milestone always triggers the completion flow.</p></div>
+      `,
+      notes: [
+        { type: "design", label: "UX Guidance", text: "The milestone bubble should appear as a small overlay that does not pause or obscure the content. Think: a toast notification that fades in for 3 seconds, then fades out. The sound should be distinct from the alarm and notifications — something unique to Circadian." },
+        { type: "superbetter", label: "SuperBetter · Progress Awareness", text: "Milestones break a long session into manageable chunks. 45 minutes feels long. Four chunks of 15 minutes each feels achievable. The patient never has to endure more than 15 minutes before getting acknowledgment. This is the 'small wins' principle." },
+        { type: "warn", label: "Invisible Motivation", text: "Keep the language factual, not celebratory. 'Halfway there' is a fact. 'Amazing job, keep going!' is performative. The milestone should confirm progress without performing enthusiasm." }
+      ]
+    },
+    {
+      phase: "Session Complete",
+      type: "complete", typeLabel: "Complete",
+      title: "Session Complete",
+      desc: "The content fades, the light device dims, and a calm completion screen appears. No confetti, no badges — just a clear confirmation that the session is done, with a summary of what was accomplished.",
+      content: `
+        <div class="data-grid single">
+          <div class="data-item">Completion sound plays (warm, distinct tone). Light device dims gradually over 5 seconds.</div>
+        </div>
+        <div class="summary-list" style="margin-top:16px">
+          <div class="summary-row"><span class="sl">Session duration</span><span class="sv">47 min 12 sec</span></div>
+          <div class="summary-row"><span class="sl">Session target</span><span class="sv">45 min</span></div>
+          <div class="summary-row"><span class="sl">Content watched</span><span class="sv">The Bear — S2 E4</span></div>
+          <div class="summary-row"><span class="sl">Milestones reached</span><span class="sv">4 of 4</span></div>
+          <div class="summary-row"><span class="sl">Daily check-in</span><span class="sv">Completed</span></div>
+          <div class="summary-row"><span class="sl">Look-away events</span><span class="sv">1 (resumed immediately)</span></div>
+        </div>
+      `,
+      notes: [
+        { type: "design", label: "UX Guidance", text: "Think Hevy workout summary but calmer and less gamified. No PR banners, no share buttons, no leaderboards. The summary is for the patient's own reference — 'here's what you did today.' The most important number is session duration — make it the largest element." },
+        { type: "superbetter", label: "SuperBetter · Completion Ritual", text: "The completion screen is a micro-ritual. It marks the end of the therapeutic action and gives the patient a moment to feel the accomplishment before moving on. The summary is not about metrics — it's about evidence." },
+        { type: "warn", label: "Respect Over Reward", text: "Do not say 'Great job!' or 'Amazing session!' The patient knows if it was great. The summary speaks for itself. A 47-minute session when the target was 45 is its own reward. The app confirms; it does not congratulate." }
+      ]
+    },
+    {
+      phase: "Session Complete",
+      type: "screen", typeLabel: "Screen",
+      title: "Session Insights (Optional)",
+      desc: "Below the summary, the patient can optionally view simple insights about their session and treatment progress. This is secondary — the patient can skip directly to the dashboard.",
+      content: `
+        <div class="data-grid">
+          <div class="data-item">Sessions completed: 6 of 14</div>
+          <div class="data-item">Current streak: 6 days</div>
+          <div class="data-item">Avg. session length: 44 min</div>
+          <div class="data-item">Check-ins completed: 6 of 6</div>
+        </div>
+        <div class="edge-case" style="margin-top:12px"><strong>Should we show trends?</strong><p>Only if the trend is positive or neutral. Never show a declining trend prominently. If sleep quality is worsening, surface that in the clinician dashboard, not here.</p></div>
+      `,
+      notes: [
+        { type: "design", label: "UX Guidance", text: "This screen is opt-in — the patient scrolls down or taps 'See details' to see it. The primary action is 'Continue to Dashboard' which should be prominent. Insights use the 'X of Y' framing, not percentages." },
+        { type: "hooked", label: "Hooked · Variable Reward", text: "The session stats are a variable reward — each day's numbers are slightly different. The patient wonders: 'How long was my session today?' The variability is gentle, not dramatic, but it creates a small moment of curiosity that reinforces returning tomorrow." }
+      ]
+    },
+    {
+      phase: "Dashboard Return",
+      type: "screen", typeLabel: "Screen",
+      title: "Dashboard — Day Complete",
+      desc: "The patient lands on the dashboard. A subtle animation fills in today's checkmark on the timeline. The two To-Do items now show as completed. The day feels 'done.'",
+      content: `
+        <div class="data-grid single">
+          <div class="data-item">Timeline: today's circle fills with a checkmark (0.5s ease animation)</div>
+          <div class="data-item">To-Do list: both items show green checkmarks — "Daily Check-In ✓" and "Light Session ✓"</div>
+          <div class="data-item">Session log: today's entry appears at the top with time and duration</div>
+          <div class="data-item">Progress area: weekly stats update to reflect completed session</div>
+        </div>
+      `,
+      notes: [
+        { type: "design", label: "UX Guidance", text: "The checkmark animation is the single most important visual moment in the daily loop. It should feel satisfying without being theatrical — a smooth fill, not a bouncing celebration. The patient sees their streak grow by one. That visual evidence is the invisible motivation principle in action." },
+        { type: "hooked", label: "Hooked · Stored Value", text: "Every completed day adds a checkmark to the timeline. This stored value accumulates — the more checkmarks, the more the patient has invested, and the harder it becomes to break the streak. The streak is never announced; it's just visible." }
+      ]
+    },
+    {
+      phase: "Dashboard Return",
+      type: "screen", typeLabel: "Screen",
+      title: "End-of-Session Guidance",
+      desc: "A brief, calm card appears below the dashboard content with guidance for the rest of the day. Focused on the two behaviors that support treatment: no napping and a consistent bedtime.",
+      content: `
+        <div class="data-grid single">
+          <div class="data-item">"Your next session is tomorrow at [time]."</div>
+          <div class="data-item">"For best results: try to skip naps today and head to bed around [bedtime]."</div>
+          <div class="data-item">"See you tomorrow morning."</div>
+        </div>
+        <div class="edge-case" style="margin-top:12px"><strong>What if the patient completed the session late?</strong><p>Adjust the messaging. If completed more than 2 hours past the recommended window: "You completed today's session. Tomorrow, try to start closer to [time] for the best results."</p></div>
+      `,
+      notes: [
+        { type: "design", label: "UX Guidance", text: "This card should feel like a gentle send-off, not a lecture. The nap and bedtime guidance are clinically important but should never sound prescriptive. Use 'try to' not 'you must.' The tomorrow time anchors the next session, creating anticipation without pressure." },
+        { type: "superbetter", label: "SuperBetter · Quest Continuation", text: "The 'see you tomorrow' message bridges today's completed quest to tomorrow's. The patient finishes today knowing exactly what comes next and when. This predictability is comforting, not boring — especially for a patient managing treatment fatigue." }
+      ]
+    },
+    {
+      phase: "Edge Cases & Day End",
+      type: "system", typeLabel: "System",
+      title: "Handling Missed Sessions",
+      desc: "What happens when the patient does not complete their session. The system's response must be encouraging, never punitive, and must maintain motivation to return tomorrow.",
+      content: `
+        <div class="edge-case"><strong>Patient snoozed and never checked in</strong><p>Push notification 30 min after alarm: "Your light session is ready whenever you are." Second notification 2 hours later: "There's still time for today's session." No further notifications. Tomorrow's alarm fires normally.</p></div>
+        <div class="edge-case"><strong>Patient started session but quit early</strong><p>Save partial progress. Dashboard shows: "Day 7 — 12 of 45 min completed." Partial credit visible in the timeline (half-filled circle). Do not count as a missed day.</p></div>
+        <div class="edge-case"><strong>Patient completed check-in but not the session</strong><p>Check-in data is saved regardless. Dashboard shows check-in as complete, session as pending. Gentle reminder in the afternoon.</p></div>
+        <div class="edge-case"><strong>Patient misses the day entirely</strong><p>Timeline shows an empty circle for that day. No "missed day" language, no red marks. The next morning's alarm fires normally. The app does not reference the missed day — it simply moves forward.</p></div>
+      `,
+      notes: [
+        { type: "warn", label: "Critical Design Principle", text: "Never shame. Never highlight failure. The timeline speaks for itself — an empty circle is visible without being punitive. The patient knows they missed a day. The app's job is to make coming back easy, not to remind them of what they missed." },
+        { type: "superbetter", label: "SuperBetter · Resilience Design", text: "Missed days are expected in any behavioral program. The system must be designed for imperfect adherence, not against it. A patient who misses one day and sees an encouraging app will return. A patient who sees judgment will disengage." },
+        { type: "hooked", label: "Hooked · Protecting the Trigger Loop", text: "A missed day must never break the trigger mechanism. The alarm fires tomorrow regardless. The To-Do list resets regardless. The patient re-enters the same loop, in the same way, as if nothing happened. Consistency in the system compensates for inconsistency in the patient." }
+      ]
+    },
+    {
+      phase: "Edge Cases & Day End",
+      type: "complete", typeLabel: "Complete",
+      title: "Normal Day — Full Cycle",
+      desc: "Summary of the complete Normal Day flow. Every day follows this same loop from alarm to dashboard. Consistency in the experience builds consistency in the behavior.",
+      content: `
+        <div class="summary-list">
+          <div class="summary-row"><span class="sl">Trigger</span><span class="sv">iPad alarm at personalized wake time</span></div>
+          <div class="summary-row"><span class="sl">Morning routine</span><span class="sv">Check-in (2 min) + Light session (30–60 min)</span></div>
+          <div class="summary-row"><span class="sl">Session experience</span><span class="sv">Content + light therapy, milestone markers</span></div>
+          <div class="summary-row"><span class="sl">Safety systems</span><span class="sv">Look-away detection, snooze limit, pause controls</span></div>
+          <div class="summary-row"><span class="sl">Completion</span><span class="sv">Summary screen, dashboard checkmark, tomorrow's preview</span></div>
+          <div class="summary-row"><span class="sl">Day guidance</span><span class="sv">No naps, consistent bedtime</span></div>
+          <div class="summary-row"><span class="sl">If missed</span><span class="sv">Encouraging nudges, no shaming, alarm resets tomorrow</span></div>
+        </div>
+        <div style="margin-top:20px">
+          <div class="edge-case"><strong>How does this change over the trial?</strong><p>It doesn't. The Normal Day flow is identical from Day 1 to Day 14. Consistency is the design. The only variable is the content the patient watches.</p></div>
+          <div class="edge-case"><strong>What about weekends?</strong><p>Same flow. The alarm time may differ if the patient's free-day schedule differs from workdays (captured in baseline questionnaire), but the structure is identical.</p></div>
+          <div class="edge-case"><strong>What about clinician check-ins?</strong><p>Handled separately from the daily flow. The clinician dashboard receives the patient's data automatically. Any clinician-initiated contact happens outside the app experience.</p></div>
+        </div>
+      `,
+      notes: [
+        { type: "hooked", label: "Hooked · Full Cycle Summary", text: "Wake trigger (alarm) → Action (check-in + session) → Variable reward (content + milestone progress) → Investment (completed session data, growing streak). This cycle repeats identically every day. By day 5–7, the external trigger (alarm) should begin transitioning to an internal trigger." },
+        { type: "superbetter", label: "SuperBetter · Ally Design", text: "The app is the patient's ally, not their taskmaster. Every design decision in this flow asks: 'Would an ally do this?' An ally reminds you gently. An ally celebrates quietly. An ally does not track your failures. An ally is there tomorrow even when you were not there today." }
+      ]
+    }
   ]
 };
 
@@ -984,6 +1300,7 @@ document.addEventListener('keydown', e => {
 
 // ─── INIT ───
 renderFlow('first');
+renderFlow('normal');
 window.addEventListener('resize', () => renderFlow(activeTab));
 </script>
 </body>
