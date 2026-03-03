@@ -7,6 +7,26 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
+  /* ─── FOCUS & A11Y ─── */
+  :focus-visible {
+    outline: 2px solid #F5A623;
+    outline-offset: 2px;
+  }
+  .skip-link {
+    position: absolute;
+    top: -100px;
+    left: 16px;
+    background: #1A1A1A;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    z-index: 200;
+    text-decoration: none;
+  }
+  .skip-link:focus { top: 12px; }
+
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
     background: #F5F3EF;
@@ -23,6 +43,7 @@
     padding: 16px 32px;
     background: #fff;
     border-bottom: 1px solid #E5E1DB;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     position: fixed;
     top: 0; left: 0; right: 0;
     z-index: 100;
@@ -105,7 +126,7 @@
 
   /* ─── STEP PROGRESS BAR ─── */
   .step-nav {
-    padding: 20px 32px 0;
+    padding: 20px 32px 28px;
     flex-shrink: 0;
   }
   .step-bar {
@@ -181,7 +202,8 @@
     padding: 24px 32px;
     overflow: hidden;
     display: flex;
-    align-items: flex-start;
+    align-items: stretch;
+    min-height: 0;
   }
 
   .card-container {
@@ -196,6 +218,7 @@
     display: flex;
     gap: 24px;
     align-items: flex-start;
+    max-height: 100%;
   }
 
   .card-main {
@@ -203,8 +226,9 @@
     background: #fff;
     border-radius: 20px;
     border: 1px solid #E5E1DB;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
     padding: 32px;
-    max-height: calc(100vh - 240px);
+    max-height: 100%;
     overflow-y: auto;
   }
 
@@ -214,7 +238,7 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    max-height: calc(100vh - 240px);
+    max-height: 100%;
     overflow-y: auto;
   }
 
@@ -305,6 +329,7 @@
     font-size: 12px;
     line-height: 1.6;
     border: 1px solid;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
   }
   .note-card strong {
     display: block;
@@ -350,6 +375,7 @@
     border-top: 1px solid #E5E1DB;
     background: #fff;
     flex-shrink: 0;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.04);
   }
   .btn {
     padding: 10px 24px;
@@ -491,27 +517,30 @@
 </head>
 <body>
 
+<!-- ─── SKIP LINK ─── -->
+<a class="skip-link" href="#main-content">Skip to content</a>
+
 <!-- ─── TOP BAR ─── -->
-<div class="topbar">
+<header class="topbar" role="banner">
   <div class="topbar-left">
-    <div class="topbar-logo">
+    <div class="topbar-logo" aria-hidden="true">
       <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
     </div>
     <span class="topbar-title">Circadian — User Flows</span>
   </div>
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('first')">First Day</button>
-    <button class="tab" onclick="switchTab('normal')">Normal Day</button>
-    <button class="tab" onclick="switchTab('last')">Last Day</button>
-  </div>
+  <nav class="tabs" role="tablist" aria-label="Flow tabs">
+    <button class="tab active" role="tab" aria-selected="true" aria-controls="panel-first" id="tab-first" onclick="switchTab('first')">First Day</button>
+    <button class="tab" role="tab" aria-selected="false" aria-controls="panel-normal" id="tab-normal" onclick="switchTab('normal')">Normal Day</button>
+    <button class="tab" role="tab" aria-selected="false" aria-controls="panel-last" id="tab-last" onclick="switchTab('last')">Last Day</button>
+  </nav>
   <div style="width: 120px;"></div>
-</div>
+</header>
 
 <!-- ─── MAIN ─── -->
-<div class="main">
+<main class="main" id="main-content">
 
   <!-- ========== FIRST DAY PANEL ========== -->
-  <div class="flow-panel active" id="panel-first">
+  <div class="flow-panel active" id="panel-first" role="tabpanel" aria-labelledby="tab-first">
     <div class="flow-header">
       <h1>First Day — Device Arrives</h1>
       <p>Day 0 · No light session · Capitalize on newness energy · Est. 10–15 min setup</p>
@@ -535,19 +564,19 @@
 
     <div class="bottom-nav">
       <button class="btn btn-back" id="back-first" onclick="prevStep('first')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         Back
       </button>
       <span class="step-counter" id="counter-first"></span>
       <button class="btn btn-next" id="next-first" onclick="nextStep('first')">
         Next
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </button>
     </div>
   </div>
 
   <!-- ========== NORMAL DAY PANEL ========== -->
-  <div class="flow-panel" id="panel-normal">
+  <div class="flow-panel" id="panel-normal" role="tabpanel" aria-labelledby="tab-normal">
     <div class="flow-header">
       <h1>Normal Day — Daily Session</h1>
       <p>Day 1–14 · Alarm → Check-in → Light session → Dashboard · Est. 45–60 min total</p>
@@ -571,19 +600,19 @@
 
     <div class="bottom-nav">
       <button class="btn btn-back" id="back-normal" onclick="prevStep('normal')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         Back
       </button>
       <span class="step-counter" id="counter-normal"></span>
       <button class="btn btn-next" id="next-normal" onclick="nextStep('normal')">
         Next
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </button>
     </div>
   </div>
 
   <!-- ========== LAST DAY PANEL ========== -->
-  <div class="flow-panel" id="panel-last">
+  <div class="flow-panel" id="panel-last" role="tabpanel" aria-labelledby="tab-last">
     <div class="placeholder-panel">
       <div class="placeholder-box">
         <div class="icon">🌙</div>
@@ -593,7 +622,7 @@
     </div>
   </div>
 
-</div>
+</main>
 
 <script>
 // ─── FLOW DATA ───
@@ -1198,12 +1227,42 @@ let activeTab = 'first';
 // ─── TAB SWITCHING ───
 function switchTab(tab) {
   activeTab = tab;
+  const tabKeys = ['first','normal','last'];
   document.querySelectorAll('.tab').forEach((t, i) => {
-    t.classList.toggle('active', ['first','normal','last'][i] === tab);
+    const isActive = tabKeys[i] === tab;
+    t.classList.toggle('active', isActive);
+    t.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    t.setAttribute('tabindex', isActive ? '0' : '-1');
   });
   document.querySelectorAll('.flow-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel-' + tab).classList.add('active');
+  if (flows[tab]) renderFlow(tab);
 }
+
+// ─── TAB KEYBOARD NAVIGATION ───
+document.querySelector('.tabs').addEventListener('keydown', e => {
+  const tabKeys = ['first','normal','last'];
+  const idx = tabKeys.indexOf(activeTab);
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+    e.preventDefault();
+    const next = tabKeys[(idx + 1) % tabKeys.length];
+    switchTab(next);
+    document.getElementById('tab-' + next).focus();
+  } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    const prev = tabKeys[(idx - 1 + tabKeys.length) % tabKeys.length];
+    switchTab(prev);
+    document.getElementById('tab-' + prev).focus();
+  } else if (e.key === 'Home') {
+    e.preventDefault();
+    switchTab('first');
+    document.getElementById('tab-first').focus();
+  } else if (e.key === 'End') {
+    e.preventDefault();
+    switchTab('last');
+    document.getElementById('tab-last').focus();
+  }
+});
 
 // ─── RENDER FLOW ───
 function renderFlow(flowKey) {
@@ -1222,12 +1281,14 @@ function renderFlow(flowKey) {
     }
   });
 
-  let barHTML = '<div class="step-bar">';
+  let barHTML = '<div class="step-bar" role="group" aria-label="Step progress">';
   data.forEach((s, i) => {
     const cls = i < current ? 'completed' : i === current ? 'active' : '';
-    barHTML += `<div class="step-dot-wrap ${cls}" onclick="goToStep('${flowKey}', ${i})"><div class="step-dot">${i+1}</div></div>`;
+    const ariaCurrent = i === current ? ' aria-current="step"' : '';
+    const state = i < current ? 'completed' : i === current ? 'current' : 'upcoming';
+    barHTML += `<div class="step-dot-wrap ${cls}" role="button" tabindex="0" aria-label="Step ${i+1}: ${s.title} (${state})"${ariaCurrent} onclick="goToStep('${flowKey}', ${i})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();goToStep('${flowKey}', ${i})}"><div class="step-dot" aria-hidden="true">${i+1}</div></div>`;
     if (i < data.length - 1) {
-      barHTML += `<div class="step-line ${i < current ? 'completed' : ''}"></div>`;
+      barHTML += `<div class="step-line ${i < current ? 'completed' : ''}" aria-hidden="true"></div>`;
     }
   });
   barHTML += '</div>';
@@ -1279,30 +1340,51 @@ function renderFlow(flowKey) {
       : '';
 
     cardsHTML += `
-      <div class="card">
+      <div class="card" role="group" aria-roledescription="slide" aria-label="Step ${i+1} of ${data.length}: ${s.title}" aria-hidden="${i !== current}">
         <div class="card-main">
           <div class="card-type ${typeClass}">${s.typeLabel}</div>${variantHTML}
           <h2>${s.title}</h2>
           <p>${s.desc}</p>
           ${s.content || ''}
         </div>
-        ${notesHTML ? `<div class="card-sidebar">${notesHTML}</div>` : ''}
+        ${notesHTML ? `<div class="card-sidebar" aria-label="Design notes for ${s.title}">${notesHTML}</div>` : ''}
       </div>
     `;
   });
   container.innerHTML = cardsHTML;
   container.style.transform = `translateX(-${current * 100}%)`;
 
-  // Counter
-  document.getElementById('counter-' + flowKey).textContent = `${current + 1} of ${data.length}`;
+  // Counter & live region announcement
+  const counterText = `${current + 1} of ${data.length}`;
+  document.getElementById('counter-' + flowKey).textContent = counterText;
+
+  // Announce step change to screen readers
+  let liveRegion = document.getElementById('step-announce');
+  if (!liveRegion) {
+    liveRegion = document.createElement('div');
+    liveRegion.id = 'step-announce';
+    liveRegion.setAttribute('role', 'status');
+    liveRegion.setAttribute('aria-live', 'polite');
+    liveRegion.setAttribute('aria-atomic', 'true');
+    liveRegion.style.cssText = 'position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);';
+    document.body.appendChild(liveRegion);
+  }
+  liveRegion.textContent = `Step ${current + 1} of ${data.length}: ${data[current].title}`;
 
   // Buttons
-  document.getElementById('back-' + flowKey).style.visibility = current === 0 ? 'hidden' : 'visible';
+  const backBtn = document.getElementById('back-' + flowKey);
+  backBtn.style.visibility = current === 0 ? 'hidden' : 'visible';
+  backBtn.setAttribute('aria-hidden', current === 0 ? 'true' : 'false');
+  if (current === 0) backBtn.setAttribute('tabindex', '-1');
+  else backBtn.removeAttribute('tabindex');
+
   const nextBtn = document.getElementById('next-' + flowKey);
   if (current === data.length - 1) {
-    nextBtn.innerHTML = 'Done <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>';
+    nextBtn.innerHTML = 'Done <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>';
+    nextBtn.setAttribute('aria-label', 'Done — last step');
   } else {
-    nextBtn.innerHTML = 'Next <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+    nextBtn.innerHTML = 'Next <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+    nextBtn.setAttribute('aria-label', `Next step: ${data[current + 1].title}`);
   }
 }
 
