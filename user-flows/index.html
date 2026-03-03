@@ -125,77 +125,94 @@
     line-height: 1.4;
   }
 
-  /* ─── STEP PROGRESS BAR ─── */
+  /* ─── PHASE TIMELINE ─── */
   .step-nav {
-    padding: 20px 32px 28px;
+    padding: 16px 32px 20px;
+    flex-shrink: 0;
+    overflow-x: auto;
+  }
+  .step-nav::-webkit-scrollbar { height: 4px; }
+  .step-nav::-webkit-scrollbar-track { background: transparent; }
+  .step-nav::-webkit-scrollbar-thumb { background: #DDD; border-radius: 4px; }
+
+  .phase-timeline {
+    display: flex;
+    gap: 6px;
+    align-items: stretch;
+  }
+
+  .phase-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px 10px;
+    border-radius: 10px;
+    background: #ECEAE6;
+    cursor: pointer;
+    transition: all 0.2s;
     flex-shrink: 0;
   }
-  .step-bar {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    position: relative;
+  .phase-group:hover { background: #E3E0DB; }
+  .phase-group.completed { background: #E2F0E8; }
+  .phase-group.completed:hover { background: #D5E8DD; }
+  .phase-group.active {
+    background: #FDF0DD;
+    box-shadow: inset 0 0 0 2px #E0B050;
   }
-  .step-dot-wrap {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    position: relative;
-    z-index: 2;
+  .phase-group.active:hover { background: #FCE8C8; }
+
+  .phase-name {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #6B6560;
+    white-space: nowrap;
   }
-  .step-dot {
-    width: 32px;
-    height: 32px;
+  .phase-group.completed .phase-name { color: #15603A; }
+  .phase-group.active .phase-name { color: #7A4A08; }
+
+  .phase-dots {
+    display: flex;
+    gap: 4px;
+  }
+
+  .pdot {
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
-    border: 2px solid #CCC;
-    background: #fff;
+    border: 1.5px solid #C5C0BA;
+    background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 11px;
-    font-weight: 600;
-    color: #888;
-    transition: all 0.25s;
-    flex-shrink: 0;
-  }
-  .step-dot-wrap.active .step-dot {
-    border-color: #F5A623;
-    background: #F5A623;
-    color: #fff;
-    box-shadow: 0 2px 8px rgba(245,166,35,0.3);
-  }
-  .step-dot-wrap.completed .step-dot {
-    border-color: #4ADE80;
-    background: #4ADE80;
-    color: #fff;
-  }
-  .step-line {
-    flex: 1;
-    height: 2px;
-    background: #E5E1DB;
-    position: relative;
-    z-index: 1;
-  }
-  .step-line.completed { background: #4ADE80; }
-
-  .step-labels {
-    display: flex;
-    margin-top: 8px;
-    position: relative;
-  }
-  .step-label {
-    font-size: 11px;
-    color: #777;
-    font-weight: 500;
-    text-align: center;
+    font-size: 9px;
+    font-weight: 700;
+    color: #8A8580;
     cursor: pointer;
-    transition: color 0.2s;
-    position: absolute;
-    transform: translateX(-50%);
-    white-space: nowrap;
+    padding: 0;
+    transition: all 0.2s;
+    font-family: inherit;
   }
-  .step-label.active { color: #F5A623; font-weight: 600; }
-  .step-label.completed { color: #4ADE80; }
+  /* Upcoming dots inside active phase — amber tint */
+  .phase-group.active .pdot {
+    border-color: #DDB060;
+    color: #7A4A08;
+  }
+  /* Completed dots — dark green, white text (7.6:1) */
+  .pdot.completed {
+    background: #15603A;
+    border-color: #15603A;
+    color: #fff;
+  }
+  /* Active dot — dark amber, white text (5.7:1) */
+  .pdot.active {
+    background: #9A5500;
+    border-color: #9A5500;
+    color: #fff;
+    box-shadow: 0 1px 4px rgba(120,60,0,0.3);
+  }
 
   /* ─── CARD AREA ─── */
   .card-area {
@@ -1306,37 +1323,29 @@ function renderFlow(flowKey) {
     }
   });
 
-  let barHTML = '<div class="step-bar" role="group" aria-label="Step progress">';
-  data.forEach((s, i) => {
-    const cls = i < current ? 'completed' : i === current ? 'active' : '';
-    const ariaCurrent = i === current ? ' aria-current="step"' : '';
-    const state = i < current ? 'completed' : i === current ? 'current' : 'upcoming';
-    barHTML += `<div class="step-dot-wrap ${cls}" role="button" tabindex="0" aria-label="Step ${i+1}: ${s.title} (${state})"${ariaCurrent} onclick="goToStep('${flowKey}', ${i})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();goToStep('${flowKey}', ${i})}"><div class="step-dot" aria-hidden="true">${i+1}</div></div>`;
-    if (i < data.length - 1) {
-      barHTML += `<div class="step-line ${i < current ? 'completed' : ''}" aria-hidden="true"></div>`;
+  let barHTML = '<div class="phase-timeline" role="group" aria-label="Step progress">';
+  phases.forEach(p => {
+    const isActive = current >= p.start && current <= p.end;
+    const isCompleted = current > p.end;
+    const groupCls = isActive ? 'active' : isCompleted ? 'completed' : '';
+    barHTML += `<div class="phase-group ${groupCls}" onclick="goToStep('${flowKey}', ${isCompleted ? p.start : isActive ? Math.min(current + 1, p.end) : p.start})">`;
+    barHTML += `<div class="phase-name">${p.name}</div>`;
+    barHTML += '<div class="phase-dots">';
+    for (let i = p.start; i <= p.end; i++) {
+      const dotCls = i < current ? 'completed' : i === current ? 'active' : '';
+      const ariaCurrent = i === current ? ' aria-current="step"' : '';
+      const stateLabel = i < current ? 'completed' : i === current ? 'current' : 'upcoming';
+      barHTML += `<button class="pdot ${dotCls}" aria-label="Step ${i+1}: ${data[i].title} (${stateLabel})"${ariaCurrent} onclick="event.stopPropagation();goToStep('${flowKey}', ${i})">${i+1}</button>`;
     }
+    barHTML += '</div></div>';
   });
   barHTML += '</div>';
-  barHTML += '<div class="step-labels" id="steplabels-' + flowKey + '"></div>';
   stepNav.innerHTML = barHTML;
 
-  // Position labels under phase midpoints
+  // Scroll active phase into view
   requestAnimationFrame(() => {
-    const labelContainer = document.getElementById('steplabels-' + flowKey);
-    const dots = stepNav.querySelectorAll('.step-dot-wrap');
-    if (!dots.length || !labelContainer) return;
-    labelContainer.innerHTML = '';
-    phases.forEach(p => {
-      const midIdx = Math.floor((p.start + p.end) / 2);
-      const dot = dots[midIdx];
-      if (!dot) return;
-      const rect = dot.getBoundingClientRect();
-      const navRect = stepNav.getBoundingClientRect();
-      const left = rect.left - navRect.left + rect.width / 2;
-      const isActive = current >= p.start && current <= p.end;
-      const isCompleted = current > p.end;
-      labelContainer.innerHTML += `<div class="step-label ${isActive ? 'active' : isCompleted ? 'completed' : ''}" style="left:${left}px" onclick="goToStep('${flowKey}', ${p.start})">${p.name}</div>`;
-    });
+    const activeGroup = stepNav.querySelector('.phase-group.active');
+    if (activeGroup) activeGroup.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
   });
 
   // Build cards
