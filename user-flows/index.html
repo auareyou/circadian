@@ -253,6 +253,21 @@
     flex-shrink: 0;
   }
 
+  .card-screenshot {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    background: #F5F3F0;
+    border: 2px dashed #D5D0CA;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #A09A92;
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 24px;
+  }
+
   .card-notes {
     width: 100%;
     max-width: 720px;
@@ -1385,6 +1400,7 @@ function renderFlow(flowKey) {
           <h2>${s.title}</h2>
           <p>${s.desc}</p>
           ${s.content || ''}
+          <div class="card-screenshot">Screenshot goes here</div>
         </div>
         ${notesHTML ? `<div class="card-notes" aria-label="Design notes for ${s.title}">${notesHTML}</div>` : ''}
       </div>
