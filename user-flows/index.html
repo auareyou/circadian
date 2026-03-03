@@ -84,14 +84,14 @@
     border-radius: 8px;
     font-size: 13px;
     font-weight: 500;
-    color: #888;
+    color: #6B6560;
     cursor: pointer;
     border: none;
     background: transparent;
     transition: all 0.2s;
     white-space: nowrap;
   }
-  .tab:hover { color: #555; }
+  .tab:hover { color: #3D3832; }
   .tab.active {
     background: #fff;
     color: #1A1A1A;
@@ -113,15 +113,16 @@
     flex-shrink: 0;
   }
   .flow-header h1 {
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 700;
     color: #1A1A1A;
     letter-spacing: -0.5px;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
   }
   .flow-header p {
-    font-size: 13px;
-    color: #999;
+    font-size: 15px;
+    color: #5C5650;
+    line-height: 1.4;
   }
 
   /* ─── STEP PROGRESS BAR ─── */
@@ -146,14 +147,14 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    border: 2px solid #DDD;
+    border: 2px solid #CCC;
     background: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 11px;
     font-weight: 600;
-    color: #BBB;
+    color: #888;
     transition: all 0.25s;
     flex-shrink: 0;
   }
@@ -183,8 +184,8 @@
     position: relative;
   }
   .step-label {
-    font-size: 10px;
-    color: #AAA;
+    font-size: 11px;
+    color: #777;
     font-weight: 500;
     text-align: center;
     cursor: pointer;
@@ -244,15 +245,18 @@
 
   /* ─── CARD CONTENT ─── */
   .card-type {
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1.2px;
-    display: inline-block;
-    padding: 3px 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
     border-radius: 5px;
     margin-bottom: 12px;
   }
+  .card-type svg { width: 13px; height: 13px; flex-shrink: 0; }
   .t-physical { background: #E8F5EC; color: #1B7A3D; }
   .t-screen { background: #E8F0FA; color: #2563EB; }
   .t-input { background: #FEF3E2; color: #B8700A; }
@@ -266,7 +270,7 @@
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.8px;
@@ -288,7 +292,7 @@
   }
   .card-main > p {
     font-size: 14px;
-    color: #777;
+    color: #4A4540;
     line-height: 1.6;
     margin-bottom: 16px;
   }
@@ -304,17 +308,17 @@
   .data-grid.triple { grid-template-columns: 1fr 1fr 1fr; }
 
   .data-item {
-    font-size: 12px;
-    color: #666;
-    padding: 8px 12px;
+    font-size: 13px;
+    color: #4A4540;
+    padding: 9px 12px;
     background: #FAFAF8;
     border-radius: 8px;
     border: 1px solid #EEEAE4;
-    line-height: 1.4;
+    line-height: 1.5;
   }
   .data-item.conditional {
     border-color: #F5A62344;
-    color: #9A6B1A;
+    color: #7A5510;
   }
   .data-item.conditional::before {
     content: '↳ ';
@@ -326,45 +330,48 @@
   .note-card {
     padding: 16px;
     border-radius: 14px;
-    font-size: 12px;
+    font-size: 13px;
     line-height: 1.6;
     border: 1px solid;
     box-shadow: 0 1px 4px rgba(0,0,0,0.04);
   }
   .note-card strong {
-    display: block;
-    font-size: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.8px;
     margin-bottom: 6px;
   }
+  .note-card strong svg { width: 13px; height: 13px; flex-shrink: 0; }
   .note-design {
     background: #F0F4FA;
     border-color: #D4DEF0;
-    color: #4A6A9A;
+    color: #3A5580;
   }
-  .note-design strong { color: #2563EB; }
+  .note-design strong { color: #1D4ED8; }
 
   .note-warn {
     background: #FEF7ED;
     border-color: #F0DFC0;
-    color: #8A6A2A;
+    color: #6B5020;
   }
-  .note-warn strong { color: #B8700A; }
+  .note-warn strong { color: #A06008; }
 
   .note-hooked {
     background: #F5F0FA;
     border-color: #DDD0F0;
-    color: #6A4A9A;
+    color: #553A85;
   }
-  .note-hooked strong { color: #7C3AED; }
+  .note-hooked strong { color: #6D28D9; }
 
   .note-superbetter {
     background: #EDF8F0;
     border-color: #C4E8D0;
-    color: #2A6A44;
+    color: #1E5A3A;
   }
-  .note-superbetter strong { color: #1B7A3D; }
+  .note-superbetter strong { color: #15803D; }
 
   /* ─── BOTTOM NAVIGATION ─── */
   .bottom-nav {
@@ -407,8 +414,8 @@
   .btn svg { width: 14px; height: 14px; }
 
   .step-counter {
-    font-size: 12px;
-    color: #AAA;
+    font-size: 13px;
+    color: #777;
     font-weight: 500;
   }
 
@@ -446,8 +453,8 @@
     margin-bottom: 8px;
   }
   .placeholder-box p {
-    font-size: 13px;
-    color: #999;
+    font-size: 14px;
+    color: #5C5650;
     line-height: 1.6;
   }
 
@@ -470,8 +477,8 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 11px;
-    color: #AAA;
+    font-size: 12px;
+    color: #6B6560;
   }
   .legend-inline .li .ld {
     width: 8px;
@@ -491,7 +498,7 @@
     font-size: 13px;
   }
   .summary-row:last-child { border: none; }
-  .summary-row .sl { color: #999; }
+  .summary-row .sl { color: #6B6560; }
   .summary-row .sv { color: #1A1A1A; font-weight: 600; }
 
   .edge-case {
@@ -502,14 +509,14 @@
     border: 1px solid #EEEAE4;
   }
   .edge-case strong {
-    font-size: 12px;
-    color: #555;
+    font-size: 13px;
+    color: #3D3832;
     display: block;
     margin-bottom: 2px;
   }
   .edge-case p {
-    font-size: 12px;
-    color: #999;
+    font-size: 13px;
+    color: #5C5650;
     line-height: 1.5;
     margin: 0;
   }
@@ -625,6 +632,24 @@
 </main>
 
 <script>
+// ─── ICONS ───
+const typeIcons = {
+  physical: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 5.5l5.5-3 5.5 3-5.5 3z"/><path d="M2.5 5.5v5l5.5 3V8.5"/><path d="M13.5 5.5v5l-5.5 3V8.5"/></svg>',
+  screen: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="12" height="9" rx="1.5"/><path d="M5.5 14h5"/><path d="M8 11v3"/></svg>',
+  input: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2.5l4 4L6 14H2v-4z"/><path d="M8 4l4 4"/></svg>',
+  action: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 1.5v9.5l2.5-2 1.5 4.5 2-0.8-1.5-4.2H14.5z"/></svg>',
+  system: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="2"/><path d="M13.5 8a5.5 5.5 0 0 0-.4-1.5l1.2-1.2-1.1-1.1-1.2 1.2A5.5 5.5 0 0 0 10.5 4.5V3h-1.5v-.5h-2V3H5.5v1.5a5.5 5.5 0 0 0-1.5.9L2.8 4.2 1.7 5.3l1.2 1.2A5.5 5.5 0 0 0 2.5 8"/><path d="M2.5 8c0 .5.1 1 .4 1.5l-1.2 1.2 1.1 1.1 1.2-1.2c.4.4.9.7 1.5.9V13h1.5v.5h2V13h1.5v-1.5c.5-.2 1-.5 1.5-.9l1.2 1.2 1.1-1.1-1.2-1.2c.3-.5.4-1 .4-1.5"/></svg>',
+  optional: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="5.5"/><path d="M5.5 8h5"/></svg>',
+  complete: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="5.5"/><path d="M5.5 8.5l2 2 3.5-4"/></svg>'
+};
+
+const noteIcons = {
+  design: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 14l2-6L11.5 1.5l2.5 2.5L7.5 11.5z"/><path d="M10 4l2 2"/></svg>',
+  warn: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2L1.5 13.5h13z"/><path d="M8 7v3"/><circle cx="8" cy="12" r="0.5" fill="currentColor" stroke="none"/></svg>',
+  hooked: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2a3 3 0 0 1 6 0v6a3 3 0 0 1-6 0"/><path d="M8 11v3.5"/><path d="M6 14.5h4"/></svg>',
+  superbetter: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1.5l2 4 4.5.7-3.3 3.2.8 4.6L8 11.8 3.9 14l.8-4.6L1.5 6.2 6 5.5z"/></svg>'
+};
+
 // ─── FLOW DATA ───
 const flows = {
   first: [
@@ -1329,7 +1354,8 @@ function renderFlow(flowKey) {
         const noteClass = {
           design: 'note-design', warn: 'note-warn', hooked: 'note-hooked', superbetter: 'note-superbetter'
         }[n.type] || 'note-design';
-        notesHTML += `<div class="note-card ${noteClass}"><strong>${n.label}</strong>${n.text}</div>`;
+        const nIcon = noteIcons[n.type] || '';
+        notesHTML += `<div class="note-card ${noteClass}"><strong>${nIcon}${n.label}</strong>${n.text}</div>`;
       });
     }
 
@@ -1339,10 +1365,12 @@ function renderFlow(flowKey) {
       ? '<span class="card-variant v-future"><svg viewBox="0 0 16 16" fill="currentColor"><polygon points="8,1 10,6 16,6 11,9.5 13,15 8,11.5 3,15 5,9.5 0,6 6,6"/></svg>Future</span>'
       : '';
 
+    const typeIcon = typeIcons[s.type] || '';
+
     cardsHTML += `
       <div class="card" role="group" aria-roledescription="slide" aria-label="Step ${i+1} of ${data.length}: ${s.title}" aria-hidden="${i !== current}">
         <div class="card-main">
-          <div class="card-type ${typeClass}">${s.typeLabel}</div>${variantHTML}
+          <div class="card-type ${typeClass}">${typeIcon}${s.typeLabel}</div>${variantHTML}
           <h2>${s.title}</h2>
           <p>${s.desc}</p>
           ${s.content || ''}
