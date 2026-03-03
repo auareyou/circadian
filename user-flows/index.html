@@ -202,13 +202,15 @@
     color: #5C3800;
   }
   /* Completed dots — dark green, white text (7.6:1) */
-  .pdot.completed {
+  .pdot.completed,
+  .phase-group.active .pdot.completed {
     background: #15603A;
     border-color: #15603A;
     color: #fff;
   }
   /* Active dot — dark amber, white text (11:1) */
-  .pdot.active {
+  .pdot.active,
+  .phase-group.active .pdot.active {
     background: #5C3200;
     border-color: #5C3200;
     color: #fff;
@@ -235,8 +237,7 @@
   .card {
     min-width: 100%;
     display: flex;
-    gap: 24px;
-    align-items: flex-start;
+    flex-direction: column;
     max-height: 100%;
   }
 
@@ -251,14 +252,13 @@
     overflow-y: auto;
   }
 
-  .card-sidebar {
-    width: 300px;
-    flex-shrink: 0;
+  .card-notes {
     display: flex;
-    flex-direction: column;
     gap: 12px;
-    max-height: 100%;
-    overflow-y: auto;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #EEEAE4;
   }
 
   /* ─── CARD CONTENT ─── */
@@ -344,8 +344,10 @@
     font-weight: 600;
   }
 
-  /* Sidebar notes */
+  /* Notes (inline below card content) */
   .note-card {
+    flex: 1;
+    min-width: 240px;
     padding: 16px;
     border-radius: 14px;
     font-size: 13px;
@@ -477,12 +479,9 @@
   }
 
   /* ─── SCROLLBAR ─── */
-  .card-main::-webkit-scrollbar,
-  .card-sidebar::-webkit-scrollbar { width: 4px; }
-  .card-main::-webkit-scrollbar-track,
-  .card-sidebar::-webkit-scrollbar-track { background: transparent; }
-  .card-main::-webkit-scrollbar-thumb,
-  .card-sidebar::-webkit-scrollbar-thumb { background: #DDD; border-radius: 4px; }
+  .card-main::-webkit-scrollbar { width: 4px; }
+  .card-main::-webkit-scrollbar-track { background: transparent; }
+  .card-main::-webkit-scrollbar-thumb { background: #DDD; border-radius: 4px; }
 
   /* ─── LEGEND (inline) ─── */
   .legend-inline {
@@ -1385,8 +1384,8 @@ function renderFlow(flowKey) {
           <h2>${s.title}</h2>
           <p>${s.desc}</p>
           ${s.content || ''}
+          ${notesHTML ? `<div class="card-notes" aria-label="Design notes for ${s.title}">${notesHTML}</div>` : ''}
         </div>
-        ${notesHTML ? `<div class="card-sidebar" aria-label="Design notes for ${s.title}">${notesHTML}</div>` : ''}
       </div>
     `;
   });
