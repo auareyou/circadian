@@ -111,6 +111,7 @@
   .flow-header {
     padding: 24px 32px 0;
     flex-shrink: 0;
+    text-align: center;
   }
   .flow-header h1 {
     font-size: 24px;
@@ -171,7 +172,7 @@
     white-space: nowrap;
   }
   .phase-group.completed .phase-name { color: #15603A; }
-  .phase-group.active .phase-name { color: #7A4A08; }
+  .phase-group.active .phase-name { color: #5C3800; }
 
   .phase-dots {
     display: flex;
@@ -197,8 +198,8 @@
   }
   /* Upcoming dots inside active phase — amber tint */
   .phase-group.active .pdot {
-    border-color: #DDB060;
-    color: #7A4A08;
+    border-color: #C09030;
+    color: #5C3800;
   }
   /* Completed dots — dark green, white text (7.6:1) */
   .pdot.completed {
@@ -206,12 +207,12 @@
     border-color: #15603A;
     color: #fff;
   }
-  /* Active dot — dark amber, white text (5.7:1) */
+  /* Active dot — dark amber, white text (11:1) */
   .pdot.active {
-    background: #9A5500;
-    border-color: #9A5500;
+    background: #5C3200;
+    border-color: #5C3200;
     color: #fff;
-    box-shadow: 0 1px 4px rgba(120,60,0,0.3);
+    box-shadow: 0 1px 4px rgba(60,30,0,0.35);
   }
 
   /* ─── CARD AREA ─── */
@@ -489,6 +490,7 @@
     gap: 16px;
     flex-wrap: wrap;
     margin-top: 12px;
+    justify-content: center;
   }
   .legend-inline .li {
     display: flex;
