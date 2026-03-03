@@ -239,26 +239,23 @@
     display: flex;
     flex-direction: column;
     max-height: 100%;
+    overflow-y: auto;
   }
 
   .card-main {
-    flex: 1;
     background: #fff;
     border-radius: 20px;
     border: 1px solid #E5E1DB;
     box-shadow: 0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
     padding: 32px;
-    max-height: 100%;
-    overflow-y: auto;
+    flex-shrink: 0;
   }
 
   .card-notes {
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid #EEEAE4;
+    margin-top: 12px;
   }
 
   /* ─── CARD CONTENT ─── */
@@ -479,9 +476,9 @@
   }
 
   /* ─── SCROLLBAR ─── */
-  .card-main::-webkit-scrollbar { width: 4px; }
-  .card-main::-webkit-scrollbar-track { background: transparent; }
-  .card-main::-webkit-scrollbar-thumb { background: #DDD; border-radius: 4px; }
+  .card::-webkit-scrollbar { width: 4px; }
+  .card::-webkit-scrollbar-track { background: transparent; }
+  .card::-webkit-scrollbar-thumb { background: #DDD; border-radius: 4px; }
 
   /* ─── LEGEND (inline) ─── */
   .legend-inline {
@@ -1384,8 +1381,8 @@ function renderFlow(flowKey) {
           <h2>${s.title}</h2>
           <p>${s.desc}</p>
           ${s.content || ''}
-          ${notesHTML ? `<div class="card-notes" aria-label="Design notes for ${s.title}">${notesHTML}</div>` : ''}
         </div>
+        ${notesHTML ? `<div class="card-notes" aria-label="Design notes for ${s.title}">${notesHTML}</div>` : ''}
       </div>
     `;
   });
