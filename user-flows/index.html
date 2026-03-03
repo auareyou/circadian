@@ -237,6 +237,24 @@
   .t-optional { background: #E8FAFA; color: #0E7490; }
   .t-complete { background: #E8F5EC; color: #1B7A3D; }
 
+  /* Variant badges (MVP / Future) */
+  .card-variant {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 3px 8px;
+    border-radius: 5px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .v-mvp { background: #E8F0FA; color: #2563EB; border: 1px solid #D4DEF0; }
+  .v-future { background: #F5F0FA; color: #7C3AED; border: 1px solid #DDD0F0; }
+  .card-variant svg { width: 10px; height: 10px; flex-shrink: 0; }
+
   .card-main h2 {
     font-size: 20px;
     font-weight: 700;
@@ -504,6 +522,8 @@
         <div class="li"><div class="ld" style="background:#7C3AED"></div>Action</div>
         <div class="li"><div class="ld" style="background:#C0294A"></div>System</div>
         <div class="li"><div class="ld" style="background:#0E7490"></div>Optional</div>
+        <div class="li" style="margin-left:12px; border-left:1px solid #DDD; padding-left:16px"><div class="ld" style="background:#2563EB; border-radius:50%"></div>MVP</div>
+        <div class="li"><div class="ld" style="background:#7C3AED; border-radius:50%"></div>Future</div>
       </div>
     </div>
 
@@ -538,6 +558,8 @@
         <div class="li"><div class="ld" style="background:#7C3AED"></div>Action</div>
         <div class="li"><div class="ld" style="background:#C0294A"></div>System</div>
         <div class="li"><div class="ld" style="background:#0E7490"></div>Optional</div>
+        <div class="li" style="margin-left:12px; border-left:1px solid #DDD; padding-left:16px"><div class="ld" style="background:#2563EB; border-radius:50%"></div>MVP</div>
+        <div class="li"><div class="ld" style="background:#7C3AED; border-radius:50%"></div>Future</div>
       </div>
     </div>
 
@@ -580,9 +602,12 @@ const flows = {
     {
       phase: "Receive & Unbox",
       type: "physical", typeLabel: "Physical",
+      variant: "future",
       title: "Patient Receives Box",
-      desc: "Package arrives with the light therapy device, iPad (pre-loaded with app), and printed quick-start instructions.",
-      content: ``,
+      desc: "Package arrives at the patient's home with the light therapy device, iPad (pre-loaded with app), and printed quick-start instructions.",
+      content: `
+        <div class="edge-case"><strong>MVP: Hospital Pickup</strong><p>In the MVP, the patient picks up the device at the hospital. A clinician walks them through the basics in person. The unboxing experience at home is a future iteration.</p></div>
+      `,
       notes: [
         { type: "warn", label: "Design Note", text: "Include a printed quick-start card in the box. This addresses the fear-of-technology barrier for older or less tech-savvy patients. The card should mirror the onboarding flow exactly — same language, same steps — so nothing feels unfamiliar when they switch to the iPad." },
         { type: "hooked", label: "Hooked · External Trigger", text: "The physical box is the first trigger. Make unboxing feel like opening something special, not medical equipment. The printed card is a fallback trigger if the screen feels intimidating." }
@@ -591,6 +616,7 @@ const flows = {
     {
       phase: "Receive & Unbox",
       type: "physical", typeLabel: "Physical",
+      variant: "future",
       title: "Open Box & Find Materials",
       desc: "Patient opens the box, finds the device, iPad, cable, and printed quick-start card. The card says: \"Start here.\"",
       content: ``,
@@ -759,9 +785,12 @@ const flows = {
     {
       phase: "Calculate & Personalize",
       type: "system", typeLabel: "System",
+      variant: "future",
       title: "Building Your Schedule",
-      desc: "System processes all baseline data to calculate the optimal light therapy window and recommended wake time.",
-      content: ``,
+      desc: "System processes all baseline data to calculate the optimal light therapy window and recommended wake time. This step is not dynamic yet — schedule is currently set by the clinician.",
+      content: `
+        <div class="edge-case"><strong>MVP: Clinician-Set Schedule</strong><p>In the MVP, the clinician sets the light therapy window based on the questionnaire data. The dynamic, algorithm-driven schedule is a future iteration.</p></div>
+      `,
       notes: [
         { type: "design", label: "UX Guidance", text: "Show a brief loading moment — \"Building your schedule...\" with a subtle animation. Don't make it instant; a 2–3 second pause signals the system is doing real work with their answers. This is a moment of anticipation." },
         { type: "hooked", label: "Hooked · Reward Moment", text: "The pause before the reveal is part of the reward. The patient invested effort in 30+ questions. Now they see the payoff: a plan built just for them." }
@@ -1243,10 +1272,16 @@ function renderFlow(flowKey) {
       });
     }
 
+    const variantHTML = s.variant === 'mvp'
+      ? '<span class="card-variant v-mvp"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="2" width="12" height="12" rx="2"/></svg>MVP</span>'
+      : s.variant === 'future'
+      ? '<span class="card-variant v-future"><svg viewBox="0 0 16 16" fill="currentColor"><polygon points="8,1 10,6 16,6 11,9.5 13,15 8,11.5 3,15 5,9.5 0,6 6,6"/></svg>Future</span>'
+      : '';
+
     cardsHTML += `
       <div class="card">
         <div class="card-main">
-          <div class="card-type ${typeClass}">${s.typeLabel}</div>
+          <div class="card-type ${typeClass}">${s.typeLabel}</div>${variantHTML}
           <h2>${s.title}</h2>
           <p>${s.desc}</p>
           ${s.content || ''}
