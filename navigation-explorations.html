@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Circadian — Navigation Hierarchy Explorations</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Serif+Display&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --cream: #FBF6F0;
+    --terracotta: #C4724E;
+    --sage: #7BA577;
+    --sage-dark: #5E9459;
+    --gold: #D4A853;
+    --deep-brown: #3D2E2A;
+    --card: #FFFFFF;
+    --text-1: #2C2320;
+    --text-2: #6B5D55;
+    --text-3: #A89B93;
+    --border: #EDE6DF;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #131313;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 56px;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-top: 8px;
+    max-width: 700px;
+  }
+
+  .page-header h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 22px;
+    color: #eee;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .page-header p {
+    font-size: 13px;
+    color: #888;
+    line-height: 1.6;
+  }
+
+  /* ---- Concept Block ---- */
+  .concept {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .concept-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .concept-number {
+    font-family: 'DM Serif Display', serif;
+    font-size: 36px;
+    color: #333;
+  }
+
+  .concept-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #ddd;
+  }
+
+  .concept-desc {
+    font-size: 13px;
+    color: #888;
+    line-height: 1.6;
+    max-width: 640px;
+    margin-left: 50px;
+    margin-top: -8px;
+  }
+
+  .concept-frames {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .frame-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .frame-label {
+    font-size: 10px;
+    color: #666;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .ipad {
+    width: 580px;
+    height: 420px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    display: flex;
+  }
+
+  .ipad-tall {
+    width: 580px;
+    height: 520px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    display: flex;
+  }
+
+  .divider {
+    width: 100%;
+    max-width: 1200px;
+    height: 1px;
+    background: #2a2a2a;
+  }
+
+  /* ---- Analysis cards ---- */
+  .analysis-row {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+    max-width: 1200px;
+  }
+
+  .analysis-card {
+    flex: 1;
+    background: #1e1e1e;
+    border-radius: 16px;
+    padding: 20px;
+  }
+
+  .analysis-card h4 {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #E88B7A;
+  }
+
+  .analysis-card.good h4 { color: #B8D4B5; }
+
+  .analysis-card ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .analysis-card li {
+    font-size: 12px;
+    color: #999;
+    line-height: 1.8;
+    padding-left: 18px;
+    position: relative;
+  }
+
+  .analysis-card li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: #555;
+  }
+
+  /* ===================================================
+     CURRENT STATE
+     =================================================== */
+  .current-sidebar {
+    width: 200px;
+    background: #1A2332;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .current-sidebar .logo {
+    font-size: 16px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 20px;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .current-sidebar .logo span { font-size: 20px; }
+
+  .current-nav-item {
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #8899AA;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+
+  .current-nav-item.active {
+    background: rgba(255,255,255,0.08);
+    color: white;
+  }
+
+  .current-nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
+
+  .current-cta {
+    margin-top: auto;
+    padding: 14px;
+    border-radius: 12px;
+    background: #3B82F6;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .current-main {
+    flex: 1;
+    background: #F0F4F8;
+    padding: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94A3B8;
+    font-size: 14px;
+  }
+
+  /* Annotation markers */
+  .problem-marker {
+    position: relative;
+  }
+
+  .problem-marker::after {
+    content: attr(data-problem);
+    position: absolute;
+    right: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #E88B7A;
+    color: white;
+    font-size: 9px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ===================================================
+     NAV A: Minimal Icon Rail + Floating Action
+     =================================================== */
+  .nav-a-rail {
+    width: 72px;
+    background: var(--deep-brown);
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .nav-a-logo {
+    font-size: 22px;
+    margin-bottom: 16px;
+  }
+
+  .nav-a-item {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    cursor: pointer;
+    transition: background 0.2s;
+    position: relative;
+  }
+
+  .nav-a-item:hover { background: rgba(255,255,255,0.06); }
+  .nav-a-item.active { background: rgba(255,255,255,0.1); }
+
+  .nav-a-item .icon { font-size: 18px; }
+  .nav-a-item .label { font-size: 8px; color: rgba(255,255,255,0.4); font-weight: 600; }
+  .nav-a-item.active .label { color: rgba(255,255,255,0.8); }
+
+  .nav-a-item .notif {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--terracotta);
+  }
+
+  .nav-a-divider {
+    width: 28px;
+    height: 1px;
+    background: rgba(255,255,255,0.08);
+    margin: 6px 0;
+  }
+
+  .nav-a-fab {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--sage);
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    margin-top: auto;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(123,165,119,0.4);
+    position: relative;
+  }
+
+  .nav-a-fab .pulse {
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 2px solid var(--sage);
+    opacity: 0.3;
+    animation: pulse 2s ease-out infinite;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); opacity: 0.3; }
+    100% { transform: scale(1.3); opacity: 0; }
+  }
+
+  .nav-a-main {
+    flex: 1;
+    background: var(--cream);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .nav-a-main .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+
+  .nav-a-main h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 24px;
+    color: var(--text-1);
+  }
+
+  .nav-a-main .sub {
+    font-size: 13px;
+    color: var(--text-3);
+    margin-top: 2px;
+  }
+
+  .streak-badge {
+    background: linear-gradient(135deg, var(--gold), #C49A42);
+    color: var(--deep-brown);
+    padding: 5px 12px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .placeholder-content {
+    flex: 1;
+    background: white;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-3);
+    font-size: 13px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  }
+
+  /* ===================================================
+     NAV B: Expanded Sidebar with Sections
+     =================================================== */
+  .nav-b-sidebar {
+    width: 220px;
+    background: var(--deep-brown);
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+
+  .nav-b-logo {
+    font-size: 15px;
+    font-weight: 700;
+    color: white;
+    padding: 0 12px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-b-logo .icon { font-size: 20px; }
+
+  .nav-b-section {
+    margin-top: 16px;
+  }
+
+  .nav-b-section-label {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: rgba(255,255,255,0.2);
+    padding: 0 12px;
+    margin-bottom: 6px;
+  }
+
+  .nav-b-item {
+    padding: 9px 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.45);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .nav-b-item:hover {
+    background: rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.7);
+  }
+
+  .nav-b-item.active {
+    background: rgba(255,255,255,0.08);
+    color: white;
+  }
+
+  .nav-b-item .icon { font-size: 15px; width: 20px; text-align: center; }
+
+  .nav-b-item .badge {
+    margin-left: auto;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 6px;
+    background: rgba(196,114,78,0.2);
+    color: var(--terracotta);
+  }
+
+  .nav-b-progress-mini {
+    margin: 16px 12px;
+    padding: 14px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 12px;
+  }
+
+  .nav-b-progress-mini .label {
+    font-size: 10px;
+    color: rgba(255,255,255,0.3);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .nav-b-progress-mini .bar-track {
+    height: 6px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 4px;
+  }
+
+  .nav-b-progress-mini .bar-fill {
+    height: 100%;
+    background: var(--sage);
+    border-radius: 3px;
+  }
+
+  .nav-b-progress-mini .detail {
+    font-size: 10px;
+    color: rgba(255,255,255,0.3);
+  }
+
+  .nav-b-start {
+    margin-top: auto;
+    padding: 13px;
+    border-radius: 12px;
+    background: var(--sage);
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .nav-b-main {
+    flex: 1;
+    background: var(--cream);
+    padding: 28px;
+  }
+
+  /* ===================================================
+     NAV C: Tab Bar (Bottom) — No Sidebar
+     =================================================== */
+  .nav-c-shell {
+    width: 100%;
+    height: 100%;
+    background: var(--cream);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .nav-c-header {
+    padding: 20px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .nav-c-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-c-logo .icon { font-size: 24px; }
+
+  .nav-c-logo .text {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: var(--text-1);
+  }
+
+  .nav-c-header-right {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .nav-c-start-btn {
+    padding: 10px 20px;
+    border-radius: 12px;
+    background: var(--sage);
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .nav-c-settings-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: white;
+    border: 1px solid var(--border);
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-c-body {
+    flex: 1;
+    padding: 0 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-c-tab-bar {
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 20px 18px;
+    background: white;
+    border-top: 1px solid var(--border);
+  }
+
+  .nav-c-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 6px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+  }
+
+  .nav-c-tab.active {
+    background: rgba(123,165,119,0.1);
+  }
+
+  .nav-c-tab .icon { font-size: 20px; }
+  .nav-c-tab .label { font-size: 10px; color: var(--text-3); font-weight: 600; }
+  .nav-c-tab.active .label { color: var(--sage-dark); }
+
+  .nav-c-tab .dot-notif {
+    position: absolute;
+    top: 4px;
+    right: 12px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--terracotta);
+  }
+
+  /* ===================================================
+     NAV D: Hybrid — Rail + Contextual Drawer
+     =================================================== */
+  .nav-d-rail {
+    width: 64px;
+    background: var(--deep-brown);
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .nav-d-logo { font-size: 20px; margin-bottom: 16px; }
+
+  .nav-d-item {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .nav-d-item:hover { background: rgba(255,255,255,0.06); }
+  .nav-d-item.active { background: rgba(255,255,255,0.1); }
+
+  .nav-d-item .notif {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--terracotta);
+  }
+
+  .nav-d-fab {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--sage);
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(123,165,119,0.3);
+  }
+
+  /* Contextual drawer */
+  .nav-d-drawer {
+    width: 200px;
+    background: #342C28;
+    padding: 20px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex-shrink: 0;
+    border-left: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .nav-d-drawer-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.25);
+    padding: 0 10px;
+    margin-bottom: 8px;
+  }
+
+  .nav-d-drawer-item {
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+
+  .nav-d-drawer-item:hover { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.7); }
+  .nav-d-drawer-item.active { background: rgba(255,255,255,0.06); color: white; }
+  .nav-d-drawer-item .icon { font-size: 13px; width: 18px; text-align: center; }
+
+  .nav-d-main {
+    flex: 1;
+    background: var(--cream);
+    padding: 28px;
+  }
+
+  /* ===================================================
+     NAV E: Top Nav Bar — Minimal, content-first
+     =================================================== */
+  .nav-e-shell {
+    width: 100%;
+    height: 100%;
+    background: var(--cream);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .nav-e-topbar {
+    display: flex;
+    align-items: center;
+    padding: 16px 28px;
+    gap: 24px;
+    border-bottom: 1px solid var(--border);
+    background: white;
+  }
+
+  .nav-e-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: 16px;
+  }
+
+  .nav-e-logo .icon { font-size: 22px; }
+  .nav-e-logo .text {
+    font-family: 'DM Serif Display', serif;
+    font-size: 17px;
+    color: var(--text-1);
+  }
+
+  .nav-e-links {
+    display: flex;
+    gap: 4px;
+  }
+
+  .nav-e-link {
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-3);
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .nav-e-link:hover { background: rgba(0,0,0,0.03); color: var(--text-2); }
+
+  .nav-e-link.active {
+    background: rgba(123,165,119,0.1);
+    color: var(--sage-dark);
+    font-weight: 600;
+  }
+
+  .nav-e-link .icon { font-size: 14px; }
+
+  .nav-e-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .nav-e-streak {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .nav-e-start {
+    padding: 8px 18px;
+    border-radius: 10px;
+    background: var(--sage);
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+  }
+
+  .nav-e-body {
+    flex: 1;
+    padding: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ===================================================
+     SITEMAP DIAGRAMS
+     =================================================== */
+  .sitemap-wrapper {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    max-width: 1200px;
+  }
+
+  .sitemap {
+    background: #1e1e1e;
+    border-radius: 16px;
+    padding: 24px;
+    flex: 1;
+    min-width: 340px;
+    max-width: 540px;
+  }
+
+  .sitemap h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    color: #ddd;
+    margin-bottom: 4px;
+    font-weight: 700;
+  }
+
+  .sitemap .desc {
+    font-size: 11px;
+    color: #666;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  .sitemap-tree {
+    padding-left: 0;
+  }
+
+  .sitemap-tree, .sitemap-tree ul {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  .sitemap-tree ul {
+    margin-left: 20px;
+    border-left: 1px solid #333;
+    padding-left: 12px;
+  }
+
+  .sitemap-tree li {
+    font-size: 12px;
+    color: #aaa;
+    padding: 4px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sitemap-tree li .icon { font-size: 13px; }
+
+  .tree-tag {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .tree-tag.primary { background: rgba(123,165,119,0.15); color: var(--sage); }
+  .tree-tag.secondary { background: rgba(212,168,83,0.15); color: var(--gold); }
+  .tree-tag.hidden { background: rgba(168,155,147,0.15); color: var(--text-3); }
+  .tree-tag.action { background: rgba(196,114,78,0.15); color: var(--terracotta); }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Navigation Hierarchy Explorations</h1>
+  <p>Five different navigation approaches for the Circadian iPad app. Each balances different trade-offs: simplicity vs. discoverability, content space vs. wayfinding, and how prominently the primary action (Start Session) lives in the hierarchy.</p>
+</div>
+
+<!-- ============ CURRENT STATE ============ -->
+<div class="concept">
+  <div class="concept-header">
+    <span class="concept-number" style="color:#E88B7A">⚠️</span>
+    <span class="concept-title">Current Navigation — For Reference</span>
+  </div>
+  <p class="concept-desc">Flat hierarchy where one-time setup tasks (Learn my face), help content (How it works), and core nav all compete at the same level. The primary action is pushed to the bottom with equal weight.</p>
+
+  <div class="concept-frames">
+    <div class="frame-wrapper">
+      <span class="frame-label">Current Sidebar</span>
+      <div class="ipad">
+        <div class="current-sidebar">
+          <div class="logo"><span>☀️</span> KairOS</div>
+          <div class="current-nav-item active"><span class="icon">🏠</span> Home</div>
+          <div class="current-nav-item"><span class="icon">❓</span> How it works</div>
+          <div class="current-nav-item"><span class="icon">👤</span> About me</div>
+          <div class="current-nav-item"><span class="icon">📺</span> Content selector</div>
+          <div class="current-nav-item"><span class="icon">🤳</span> Learn my face</div>
+          <button class="current-cta">Start session</button>
+        </div>
+        <div class="current-main">
+          <p style="text-align:center;max-width:300px;line-height:1.6">
+            Current dashboard content area
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="analysis-row">
+  <div class="analysis-card">
+    <h4>Problems with current nav</h4>
+    <ul>
+      <li>"How it works" is onboarding — shouldn't be permanent nav</li>
+      <li>"About me" is vague — profile? preferences? medical info?</li>
+      <li>"Content selector" is a feature, not a destination</li>
+      <li>"Learn my face" is a one-time setup task in daily nav</li>
+      <li>No progress/data section — the most motivating part</li>
+      <li>"Start session" CTA has same visual weight as everything else</li>
+      <li>Flat hierarchy — everything at one level, no grouping</li>
+    </ul>
+  </div>
+  <div class="analysis-card good">
+    <h4>What the nav should do</h4>
+    <ul>
+      <li>Make "Start session" the most prominent thing on screen</li>
+      <li>Give progress/stats a dedicated home (encouragement)</li>
+      <li>Separate daily actions from setup/one-time tasks</li>
+      <li>Content should be accessible but not dominate nav</li>
+      <li>Help/onboarding should be contextual, not nav-level</li>
+      <li>Work for sick/tired patients — minimal cognitive load</li>
+      <li>Scale if features are added without getting cluttered</li>
+    </ul>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ============ NAV A: Minimal Icon Rail ============ -->
+<div class="concept">
+  <div class="concept-header">
+    <span class="concept-number">A</span>
+    <span class="concept-title">Minimal Icon Rail — Maximum content space</span>
+  </div>
+  <p class="concept-desc">Narrow icon-only sidebar keeps navigation accessible without eating content space. The Start Session button becomes a floating action button — always visible, always prominent, pulsing gently when it's time. Best for: maximizing the content area for data and media, keeping things clean for overwhelmed patients.</p>
+
+  <div class="concept-frames">
+    <div class="frame-wrapper">
+      <span class="frame-label">Icon Rail + Floating CTA</span>
+      <div class="ipad">
+        <div class="nav-a-rail">
+          <div class="nav-a-logo">☀️</div>
+          <div class="nav-a-item active">
+            <span class="icon">🏠</span>
+            <span class="label">Home</span>
+          </div>
+          <div class="nav-a-item">
+            <span class="icon">📊</span>
+            <span class="label">Progress</span>
+          </div>
+          <div class="nav-a-item">
+            <span class="icon">📺</span>
+            <span class="label">Content</span>
+            <span class="notif"></span>
+          </div>
+          <div class="nav-a-divider"></div>
+          <div class="nav-a-item">
+            <span class="icon">❓</span>
+            <span class="label">Help</span>
+          </div>
+          <div class="nav-a-item">
+            <span class="icon">⚙️</span>
+            <span class="label">Settings</span>
+          </div>
+          <button class="nav-a-fab">
+            ☀️
+            <span class="pulse"></span>
+          </button>
+        </div>
+        <div class="nav-a-main">
+          <div class="top">
+            <div>
+              <h1>Good morning, John</h1>
+              <p class="sub">Day 10 of 14 · Week 2</p>
+            </div>
+            <div class="streak-badge">🔥 9 days</div>
+          </div>
+          <div class="placeholder-content">[Dashboard content — maximum width]</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ============ NAV B: Expanded Sidebar ============ -->
+<div class="concept">
+  <div class="concept-header">
+    <span class="concept-number">B</span>
+    <span class="concept-title">Grouped Sidebar — Clear sections, scannable</span>
+  </div>
+  <p class="concept-desc">Wider sidebar with labeled sections separating daily actions from settings/setup. Progress bar lives in the sidebar as constant motivation. Best for: patients who want clear wayfinding, making the hierarchy explicit, keeping progress always visible.</p>
+
+  <div class="concept-frames">
+    <div class="frame-wrapper">
+      <span class="frame-label">Sectioned Sidebar</span>
+      <div class="ipad-tall">
+        <div class="nav-b-sidebar">
+          <div class="nav-b-logo"><span class="icon">☀️</span> Circadian</div>
+
+          <div class="nav-b-section">
+            <p class="nav-b-section-label">Daily</p>
+            <div class="nav-b-item active"><span class="icon">🏠</span> Home</div>
+            <div class="nav-b-item"><span class="icon">📊</span> My Progress<span class="badge">↑</span></div>
+            <div class="nav-b-item"><span class="icon">📺</span> Content</div>
+          </div>
+
+          <div class="nav-b-section">
+            <p class="nav-b-section-label">Account</p>
+            <div class="nav-b-item"><span class="icon">👤</span> My Profile</div>
+            <div class="nav-b-item"><span class="icon">⚙️</span> Settings</div>
+            <div class="nav-b-item"><span class="icon">❓</span> Help & FAQ</div>
+          </div>
+
+          <div class="nav-b-progress-mini">
+            <p class="label">TREATMENT PROGRESS</p>
+            <div class="bar-track"><div class="bar-fill" style="width:71%"></div></div>
+            <p class="detail">Day 10 of 14 · 71%</p>
+          </div>
+
+          <button class="nav-b-start">☀️ Start Session</button>
+        </div>
+        <div class="nav-b-main">
+          <div class="placeholder-content" style="height:100%;background:white;border-radius:16px;display:flex;align-items:center;justify-content:center;color:var(--text-3);font-size:13px;">[Dashboard content area]</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ============ NAV C: Bottom Tab Bar ============ -->
+<div class="concept">
+  <div class="concept-header">
+    <span class="concept-number">C</span>
+    <span class="concept-title">Bottom Tab Bar — No sidebar, all content</span>
+  </div>
+  <p class="concept-desc">Removes the sidebar entirely. Navigation moves to the bottom (iOS-style tab bar). Full-width content area. Start Session moves to the top-right header as the primary persistent CTA. Best for: the most spacious layout, patients used to mobile patterns, clean and simple.</p>
+
+  <div class="concept-frames">
+    <div class="frame-wrapper">
+      <span class="frame-label">Bottom Tabs + Header CTA</span>
+      <div class="ipad">
+        <div class="nav-c-shell">
+          <div class="nav-c-header">
+            <div class="nav-c-logo">
+              <span class="icon">☀️</span>
+              <span class="text">Circadian</span>
+            </div>
+            <div class="nav-c-header-right">
+              <div class="streak-badge">🔥 9</div>
+              <button class="nav-c-start-btn">☀️ Start Session</button>
+              <button class="nav-c-settings-btn">⚙️</button>
+            </div>
+          </div>
+
+          <div class="nav-c-body">
+            <div class="placeholder-content" style="width:100%;height:100%">[Full-width dashboard content]</div>
+          </div>
+
+          <div class="nav-c-tab-bar">
+            <div class="nav-c-tab active">
+              <span class="icon">🏠</span>
+              <span class="label">Home</span>
+            </div>
+            <div class="nav-c-tab">
+              <span class="icon">📊</span>
+              <span class="label">Progress</span>
+              <span class="dot-notif"></span>
+            </div>
+            <div class="nav-c-tab">
+              <span class="icon">📺</span>
+              <span class="label">Content</span>
+            </div>
+            <div class="nav-c-tab">
+              <span class="icon">👤</span>
+              <span class="label">Profile</span>
+            </div>
+            <div class="nav-c-tab">
+              <span class="icon">❓</span>
+              <span class="label">Help</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ============ NAV D: Rail + Contextual Drawer ============ -->
+<div class="concept">
+  <div class="concept-header">
+    <span class="concept-number">D</span>
+    <span class="concept-title">Rail + Drawer — Progressive disclosure</span>
+  </div>
+  <p class="concept-desc">Icon rail for top-level destinations, plus a contextual drawer that slides open with sub-items when a section is selected. The drawer can collapse when not needed (e.g., during a session). Best for: scaling to more features later, progressive disclosure, power users who want sub-navigation.</p>
+
+  <div class="concept-frames">
+    <div class="frame-wrapper">
+      <span class="frame-label">Rail + Content Drawer Expanded</span>
+      <div class="ipad-tall">
+        <div class="nav-d-rail">
+          <div class="nav-d-logo">☀️</div>
+          <div class="nav-d-item active">🏠</div>
+          <div class="nav-d-item">📊<span class="notif"></span></div>
+          <div class="nav-d-item">📺</div>
+          <div class="nav-d-item">⚙️</div>
+          <button class="nav-d-fab">☀️</button>
+        </div>
+        <div class="nav-d-drawer">
+          <p class="nav-d-drawer-title">Content Library</p>
+          <div class="nav-d-drawer-item active"><span class="icon">📺</span> Netflix</div>
+          <div class="nav-d-drawer-item"><span class="icon">📰</span> News Feed</div>
+          <div class="nav-d-drawer-item"><span class="icon">🎵</span> Ambient Sounds</div>
+          <div class="nav-d-drawer-item"><span class="icon">📖</span> Short Stories</div>
+          <div class="nav-d-drawer-item"><span class="icon">🧠</span> Daily Trivia</div>
+          <p class="nav-d-drawer-title" style="margin-top:16px;">Manage</p>
+          <div class="nav-d-drawer-item"><span class="icon">⭐</span> Favorites</div>
+          <div class="nav-d-drawer-item"><span class="icon">🔗</span> Connected Apps</div>
+        </div>
+        <div class="nav-d-main">
+          <div class="placeholder-content" style="height:100%;background:white;border-radius:16px;display:flex;align-items:center;justify-content:center;color:var(--text-3);font-size:13px;">[Content view - Netflix]</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ============ NAV E: Top Navigation Bar ============ -->
+<div class="concept">
+  <div class="concept-header">
+    <span class="concept-number">E</span>
+    <span class="concept-title">Top Navigation Bar — Horizontal, familiar</span>
+  </div>
+  <p class="concept-desc">Navigation as a horizontal top bar with text links. Feels like a web app — extremely familiar. CTA and streak live in the top-right. Reclaims the full left edge for content. Best for: simplicity, familiarity for patients who browse the web, horizontal iPad layouts where vertical space matters more.</p>
+
+  <div class="concept-frames">
+    <div class="frame-wrapper">
+      <span class="frame-label">Horizontal Top Bar</span>
+      <div class="ipad">
+        <div class="nav-e-shell">
+          <div class="nav-e-topbar">
+            <div class="nav-e-logo">
+              <span class="icon">☀️</span>
+              <span class="text">Circadian</span>
+            </div>
+            <div class="nav-e-links">
+              <div class="nav-e-link active"><span class="icon">🏠</span> Home</div>
+              <div class="nav-e-link"><span class="icon">📊</span> Progress</div>
+              <div class="nav-e-link"><span class="icon">📺</span> Content</div>
+              <div class="nav-e-link"><span class="icon">👤</span> Profile</div>
+              <div class="nav-e-link"><span class="icon">❓</span> Help</div>
+            </div>
+            <div class="nav-e-right">
+              <span class="nav-e-streak">🔥 9-day streak</span>
+              <button class="nav-e-start">☀️ Start Session</button>
+            </div>
+          </div>
+          <div class="nav-e-body">
+            <div class="placeholder-content" style="width:100%;height:100%;">[Full-width, full-height dashboard]</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ============ INFORMATION ARCHITECTURE ============ -->
+<div class="page-header">
+  <h1>Proposed Information Architecture</h1>
+  <p>Two approaches to organizing the same features — one lean (3 core destinations) and one with room to grow (5 destinations). Both remove one-time setup from primary nav and elevate progress tracking.</p>
+</div>
+
+<div class="sitemap-wrapper">
+  <div class="sitemap">
+    <h3>IA Option 1 — Lean (3 tabs)</h3>
+    <p class="desc">Everything a patient needs in 3 taps. Setup and help are buried behind settings. Simplest possible for sick/tired/tech-averse patients.</p>
+    <ul class="sitemap-tree">
+      <li><span class="icon">🏠</span> <strong style="color:#ddd">Home</strong> <span class="tree-tag primary">Primary</span></li>
+      <ul>
+        <li><span class="icon">☀️</span> Start Session <span class="tree-tag action">CTA</span></li>
+        <li><span class="icon">📊</span> Today's score + streak</li>
+        <li><span class="icon">💡</span> Daily insight / recommendation</li>
+        <li><span class="icon">📅</span> Treatment journey overview</li>
+      </ul>
+      <li><span class="icon">📊</span> <strong style="color:#ddd">Progress</strong> <span class="tree-tag primary">Primary</span></li>
+      <ul>
+        <li><span class="icon">📈</span> Session quality over time</li>
+        <li><span class="icon">🗓</span> Session pattern / heatmap</li>
+        <li><span class="icon">🏆</span> Milestones & achievements</li>
+        <li><span class="icon">💤</span> Sleep patterns (if applicable)</li>
+      </ul>
+      <li><span class="icon">📺</span> <strong style="color:#ddd">Content</strong> <span class="tree-tag primary">Primary</span></li>
+      <ul>
+        <li><span class="icon">📺</span> Netflix</li>
+        <li><span class="icon">📰</span> News feed</li>
+        <li><span class="icon">🎵</span> Ambient sounds</li>
+        <li><span class="icon">🧠</span> Trivia / activities</li>
+      </ul>
+      <li><span class="icon">⚙️</span> <strong style="color:#888">Settings</strong> <span class="tree-tag hidden">Secondary</span></li>
+      <ul>
+        <li><span class="icon">👤</span> Profile / About me</li>
+        <li><span class="icon">🤳</span> Face calibration <span class="tree-tag hidden">Setup</span></li>
+        <li><span class="icon">🔔</span> Notifications & reminders</li>
+        <li><span class="icon">❓</span> How it works / FAQ</li>
+        <li><span class="icon">🔗</span> Connected apps</li>
+      </ul>
+    </ul>
+  </div>
+
+  <div class="sitemap">
+    <h3>IA Option 2 — Expanded (5 tabs)</h3>
+    <p class="desc">More discoverable. Progress and Profile get their own tabs. Useful if the app evolves to include more social/personal features or deeper data views.</p>
+    <ul class="sitemap-tree">
+      <li><span class="icon">🏠</span> <strong style="color:#ddd">Home</strong> <span class="tree-tag primary">Primary</span></li>
+      <ul>
+        <li><span class="icon">☀️</span> Start Session <span class="tree-tag action">CTA</span></li>
+        <li><span class="icon">📊</span> Today's snapshot</li>
+        <li><span class="icon">💡</span> Daily insight / recommendation</li>
+      </ul>
+      <li><span class="icon">📊</span> <strong style="color:#ddd">Progress</strong> <span class="tree-tag primary">Primary</span></li>
+      <ul>
+        <li><span class="icon">🗺</span> Treatment journey map</li>
+        <li><span class="icon">📈</span> Quality trends</li>
+        <li><span class="icon">🗓</span> Session heatmap</li>
+        <li><span class="icon">🏆</span> Achievements</li>
+      </ul>
+      <li><span class="icon">📺</span> <strong style="color:#ddd">Content</strong> <span class="tree-tag primary">Primary</span></li>
+      <ul>
+        <li><span class="icon">📺</span> Video (Netflix)</li>
+        <li><span class="icon">📰</span> News & articles</li>
+        <li><span class="icon">🎵</span> Audio & ambient</li>
+        <li><span class="icon">🧠</span> Games & trivia</li>
+        <li><span class="icon">🎯</span> Daily surprise</li>
+      </ul>
+      <li><span class="icon">👤</span> <strong style="color:#ddd">Profile</strong> <span class="tree-tag secondary">Secondary</span></li>
+      <ul>
+        <li><span class="icon">📋</span> My treatment info</li>
+        <li><span class="icon">⏰</span> My preferences & schedule</li>
+        <li><span class="icon">🤳</span> Face calibration <span class="tree-tag hidden">Setup</span></li>
+        <li><span class="icon">🔗</span> Connected apps</li>
+      </ul>
+      <li><span class="icon">❓</span> <strong style="color:#ddd">Help</strong> <span class="tree-tag secondary">Secondary</span></li>
+      <ul>
+        <li><span class="icon">📖</span> How light therapy works</li>
+        <li><span class="icon">🔧</span> Troubleshooting</li>
+        <li><span class="icon">💬</span> Contact support</li>
+        <li><span class="icon">📋</span> FAQ</li>
+      </ul>
+    </ul>
+  </div>
+</div>
+
+<div style="height:60px"></div>
+</body>
+</html>

@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Circadian — User Flows</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+    background: #F5F3EF;
+    color: #1A1A1A;
+    min-height: 100vh;
+    overflow: hidden;
+  }
+
+  /* ─── TOP BAR ─── */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 32px;
+    background: #fff;
+    border-bottom: 1px solid #E5E1DB;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    height: 60px;
+  }
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .topbar-logo {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, #F5A623, #E8852A);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .topbar-logo svg { width: 16px; height: 16px; }
+  .topbar-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1A1A1A;
+    letter-spacing: -0.3px;
+  }
+
+  /* ─── TABS ─── */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    background: #F0EDE8;
+    border-radius: 10px;
+    padding: 3px;
+  }
+  .tab {
+    padding: 7px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #888;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab:hover { color: #555; }
+  .tab.active {
+    background: #fff;
+    color: #1A1A1A;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    font-weight: 600;
+  }
+
+  /* ─── MAIN CONTENT ─── */
+  .main {
+    margin-top: 60px;
+    height: calc(100vh - 60px);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ─── FLOW HEADER ─── */
+  .flow-header {
+    padding: 24px 32px 0;
+    flex-shrink: 0;
+  }
+  .flow-header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1A1A1A;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+  }
+  .flow-header p {
+    font-size: 13px;
+    color: #999;
+  }
+
+  /* ─── STEP PROGRESS BAR ─── */
+  .step-nav {
+    padding: 20px 32px 0;
+    flex-shrink: 0;
+  }
+  .step-bar {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    position: relative;
+  }
+  .step-dot-wrap {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+  }
+  .step-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid #DDD;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: #BBB;
+    transition: all 0.25s;
+    flex-shrink: 0;
+  }
+  .step-dot-wrap.active .step-dot {
+    border-color: #F5A623;
+    background: #F5A623;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(245,166,35,0.3);
+  }
+  .step-dot-wrap.completed .step-dot {
+    border-color: #4ADE80;
+    background: #4ADE80;
+    color: #fff;
+  }
+  .step-line {
+    flex: 1;
+    height: 2px;
+    background: #E5E1DB;
+    position: relative;
+    z-index: 1;
+  }
+  .step-line.completed { background: #4ADE80; }
+
+  .step-labels {
+    display: flex;
+    margin-top: 8px;
+    position: relative;
+  }
+  .step-label {
+    font-size: 10px;
+    color: #AAA;
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+    transition: color 0.2s;
+    position: absolute;
+    transform: translateX(-50%);
+    white-space: nowrap;
+  }
+  .step-label.active { color: #F5A623; font-weight: 600; }
+  .step-label.completed { color: #4ADE80; }
+
+  /* ─── CARD AREA ─── */
+  .card-area {
+    flex: 1;
+    padding: 24px 32px;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .card-container {
+    width: 100%;
+    display: flex;
+    gap: 24px;
+    transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+
+  .card {
+    min-width: 100%;
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+  }
+
+  .card-main {
+    flex: 1;
+    background: #fff;
+    border-radius: 20px;
+    border: 1px solid #E5E1DB;
+    padding: 32px;
+    max-height: calc(100vh - 240px);
+    overflow-y: auto;
+  }
+
+  .card-sidebar {
+    width: 300px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: calc(100vh - 240px);
+    overflow-y: auto;
+  }
+
+  /* ─── CARD CONTENT ─── */
+  .card-type {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 5px;
+    margin-bottom: 12px;
+  }
+  .t-physical { background: #E8F5EC; color: #1B7A3D; }
+  .t-screen { background: #E8F0FA; color: #2563EB; }
+  .t-input { background: #FEF3E2; color: #B8700A; }
+  .t-action { background: #F0E8FA; color: #7C3AED; }
+  .t-system { background: #FAE8EE; color: #C0294A; }
+  .t-optional { background: #E8FAFA; color: #0E7490; }
+  .t-complete { background: #E8F5EC; color: #1B7A3D; }
+
+  .card-main h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1A1A1A;
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+  }
+  .card-main > p {
+    font-size: 14px;
+    color: #777;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  /* Data grid */
+  .data-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .data-grid.single { grid-template-columns: 1fr; }
+  .data-grid.triple { grid-template-columns: 1fr 1fr 1fr; }
+
+  .data-item {
+    font-size: 12px;
+    color: #666;
+    padding: 8px 12px;
+    background: #FAFAF8;
+    border-radius: 8px;
+    border: 1px solid #EEEAE4;
+    line-height: 1.4;
+  }
+  .data-item.conditional {
+    border-color: #F5A62344;
+    color: #9A6B1A;
+  }
+  .data-item.conditional::before {
+    content: '↳ ';
+    color: #F5A623;
+    font-weight: 600;
+  }
+
+  /* Sidebar notes */
+  .note-card {
+    padding: 16px;
+    border-radius: 14px;
+    font-size: 12px;
+    line-height: 1.6;
+    border: 1px solid;
+  }
+  .note-card strong {
+    display: block;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 6px;
+  }
+  .note-design {
+    background: #F0F4FA;
+    border-color: #D4DEF0;
+    color: #4A6A9A;
+  }
+  .note-design strong { color: #2563EB; }
+
+  .note-warn {
+    background: #FEF7ED;
+    border-color: #F0DFC0;
+    color: #8A6A2A;
+  }
+  .note-warn strong { color: #B8700A; }
+
+  .note-hooked {
+    background: #F5F0FA;
+    border-color: #DDD0F0;
+    color: #6A4A9A;
+  }
+  .note-hooked strong { color: #7C3AED; }
+
+  .note-superbetter {
+    background: #EDF8F0;
+    border-color: #C4E8D0;
+    color: #2A6A44;
+  }
+  .note-superbetter strong { color: #1B7A3D; }
+
+  /* ─── BOTTOM NAVIGATION ─── */
+  .bottom-nav {
+    padding: 16px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #E5E1DB;
+    background: #fff;
+    flex-shrink: 0;
+  }
+  .btn {
+    padding: 10px 24px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-back {
+    background: #F0EDE8;
+    color: #777;
+  }
+  .btn-back:hover { background: #E5E1DB; color: #555; }
+  .btn-next {
+    background: #1A1A1A;
+    color: #fff;
+  }
+  .btn-next:hover { background: #333; }
+  .btn-next:disabled {
+    background: #DDD;
+    color: #AAA;
+    cursor: default;
+  }
+  .btn svg { width: 14px; height: 14px; }
+
+  .step-counter {
+    font-size: 12px;
+    color: #AAA;
+    font-weight: 500;
+  }
+
+  /* ─── FLOW PANELS ─── */
+  .flow-panel { display: none; }
+  .flow-panel.active { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
+  /* ─── PLACEHOLDER ─── */
+  .placeholder-panel {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+  }
+  .placeholder-box {
+    text-align: center;
+    max-width: 400px;
+  }
+  .placeholder-box .icon {
+    width: 64px;
+    height: 64px;
+    background: #F0EDE8;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 28px;
+  }
+  .placeholder-box h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1A1A1A;
+    margin-bottom: 8px;
+  }
+  .placeholder-box p {
+    font-size: 13px;
+    color: #999;
+    line-height: 1.6;
+  }
+
+  /* ─── SCROLLBAR ─── */
+  .card-main::-webkit-scrollbar,
+  .card-sidebar::-webkit-scrollbar { width: 4px; }
+  .card-main::-webkit-scrollbar-track,
+  .card-sidebar::-webkit-scrollbar-track { background: transparent; }
+  .card-main::-webkit-scrollbar-thumb,
+  .card-sidebar::-webkit-scrollbar-thumb { background: #DDD; border-radius: 4px; }
+
+  /* ─── LEGEND (inline) ─── */
+  .legend-inline {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+  .legend-inline .li {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #AAA;
+  }
+  .legend-inline .li .ld {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+  }
+
+  /* summary list inside cards */
+  .summary-list {
+    margin-top: 16px;
+  }
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #F0EDE8;
+    font-size: 13px;
+  }
+  .summary-row:last-child { border: none; }
+  .summary-row .sl { color: #999; }
+  .summary-row .sv { color: #1A1A1A; font-weight: 600; }
+
+  .edge-case {
+    margin-top: 8px;
+    padding: 10px 14px;
+    background: #FAFAF8;
+    border-radius: 10px;
+    border: 1px solid #EEEAE4;
+  }
+  .edge-case strong {
+    font-size: 12px;
+    color: #555;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .edge-case p {
+    font-size: 12px;
+    color: #999;
+    line-height: 1.5;
+    margin: 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── TOP BAR ─── -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </div>
+    <span class="topbar-title">Circadian — User Flows</span>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('first')">First Day</button>
+    <button class="tab" onclick="switchTab('normal')">Normal Day</button>
+    <button class="tab" onclick="switchTab('last')">Last Day</button>
+  </div>
+  <div style="width: 120px;"></div>
+</div>
+
+<!-- ─── MAIN ─── -->
+<div class="main">
+
+  <!-- ========== FIRST DAY PANEL ========== -->
+  <div class="flow-panel active" id="panel-first">
+    <div class="flow-header">
+      <h1>First Day — Device Arrives</h1>
+      <p>Day 0 · No light session · Capitalize on newness energy · Est. 10–15 min setup</p>
+      <div class="legend-inline">
+        <div class="li"><div class="ld" style="background:#1B7A3D"></div>Physical</div>
+        <div class="li"><div class="ld" style="background:#2563EB"></div>Screen</div>
+        <div class="li"><div class="ld" style="background:#B8700A"></div>User Input</div>
+        <div class="li"><div class="ld" style="background:#7C3AED"></div>Action</div>
+        <div class="li"><div class="ld" style="background:#C0294A"></div>System</div>
+        <div class="li"><div class="ld" style="background:#0E7490"></div>Optional</div>
+      </div>
+    </div>
+
+    <div class="step-nav" id="stepnav-first"></div>
+
+    <div class="card-area">
+      <div class="card-container" id="cards-first"></div>
+    </div>
+
+    <div class="bottom-nav">
+      <button class="btn btn-back" id="back-first" onclick="prevStep('first')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back
+      </button>
+      <span class="step-counter" id="counter-first"></span>
+      <button class="btn btn-next" id="next-first" onclick="nextStep('first')">
+        Next
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ========== NORMAL DAY PANEL ========== -->
+  <div class="flow-panel" id="panel-normal">
+    <div class="placeholder-panel">
+      <div class="placeholder-box">
+        <div class="icon">☀️</div>
+        <h2>Normal Day Flow</h2>
+        <p>The daily light therapy session flow — alarm, quick check-in, 30-minute session with entertainment, and daily log. Coming up next.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== LAST DAY PANEL ========== -->
+  <div class="flow-panel" id="panel-last">
+    <div class="placeholder-panel">
+      <div class="placeholder-box">
+        <div class="icon">🌙</div>
+        <h2>Last Day Flow</h2>
+        <p>The trial wrap-up experience — final session, results summary, device return instructions, and a warm, intentional ending. Coming soon.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ─── FLOW DATA ───
+const flows = {
+  first: [
+    {
+      phase: "Receive & Unbox",
+      type: "physical", typeLabel: "Physical",
+      title: "Patient Receives Box",
+      desc: "Package arrives with the light therapy device, iPad (pre-loaded with app), and printed quick-start instructions.",
+      content: ``,
+      notes: [
+        { type: "warn", label: "Design Note", text: "Include a printed quick-start card in the box. This addresses the fear-of-technology barrier for older or less tech-savvy patients. The card should mirror the onboarding flow exactly — same language, same steps — so nothing feels unfamiliar when they switch to the iPad." },
+        { type: "hooked", label: "Hooked · External Trigger", text: "The physical box is the first trigger. Make unboxing feel like opening something special, not medical equipment. The printed card is a fallback trigger if the screen feels intimidating." }
+      ]
+    },
+    {
+      phase: "Receive & Unbox",
+      type: "physical", typeLabel: "Physical",
+      title: "Open Box & Find Materials",
+      desc: "Patient opens the box, finds the device, iPad, cable, and printed quick-start card. The card says: \"Start here.\"",
+      content: ``,
+      notes: [
+        { type: "design", label: "UX Guidance", text: "The printed card should have 3–4 steps max. Large type. Illustrations, not photos. One arrow pointing to \"Turn on iPad\" as the single next action. Think IKEA instructions — no words needed." }
+      ]
+    },
+    {
+      phase: "Onboarding",
+      type: "screen", typeLabel: "Screen",
+      title: "Welcome Screen",
+      desc: "Warm, calm welcome. One sentence about what this is. Single button: \"Let's get started.\"",
+      content: ``,
+      notes: [
+        { type: "design", label: "UX Guidance", text: "Full-screen, minimal. One illustration, one line of text, one button. No login, no account creation, no terms to accept. The iPad is pre-configured — this is a medical trial device." },
+        { type: "hooked", label: "Hooked · Investment Phase", text: "Every tap the patient makes during setup is a micro-investment. The more they put in now, the more committed they become to completing the trial. Keep each step tiny so the investment accumulates without friction." }
+      ]
+    },
+    {
+      phase: "Onboarding",
+      type: "screen", typeLabel: "Screen",
+      title: "What to Expect",
+      desc: "3–4 glanceable cards that set expectations for the full trial experience. Swipe or auto-advance.",
+      content: `
+        <div class="data-grid single">
+          <div class="data-item">① This is a daily morning routine — same time, every day</div>
+          <div class="data-item">② Each session is ~30 min of light while you watch something you enjoy</div>
+          <div class="data-item">③ Good sleep makes treatment work better — no naps, stick to your window</div>
+          <div class="data-item">④ We'll guide you every step of the way</div>
+        </div>
+      `,
+      notes: [
+        { type: "design", label: "UX Guidance", text: "Each card = one illustration + one sentence. Progress dots at bottom. ~15 seconds per card max. Should mirror the printed card content exactly — no new information, just a different format." },
+        { type: "superbetter", label: "SuperBetter · Epic Meaning", text: "Frame this as a quest the patient is choosing to undertake. They aren't \"assigned treatment\" — they're starting something that could meaningfully improve how they feel. Give the daily routine a sense of purpose, not obligation." },
+        { type: "warn", label: "Key Principle", text: "Onboarding mirrors the printed instructions — same content, less reading. Designed to be understood at a glance. No walls of text." }
+      ]
+    },
+    {
+      phase: "Baseline Questionnaire",
+      type: "input", typeLabel: "User Input",
+      title: "A. Work Schedule",
+      desc: "Section 1 of 7 — Quick question about work frequency to calibrate the sleep schedule algorithm.",
+      content: `
+        <div class="data-grid single">
+          <div class="data-item">How many days per week do you work?</div>
+        </div>
+      `,
+      notes: [
+        { type: "design", label: "UX Guidance", text: "Large number selector or simple stepper. One question per screen to keep cognitive load near zero. Show progress: \"1 of 7 sections.\" This is the easiest section — builds momentum." }
+      ]
+    },
+    {
+      phase: "Baseline Questionnaire",
+      type: "input", typeLabel: "User Input",
+      title: "B. Workday Sleep",
+      desc: "Section 2 of 7 — Typical sleep patterns on days the patient works.",
+      content: `
+        <div class="data-grid">
+          <div class="data-item">Bedtime (get into bed)</div>
+          <div class="data-item">Try-to-sleep time</div>
+          <div class="data-item">Minutes to fall asleep</div>
+          <div class="data-item">Wake-up time</div>
+          <div class="data-item">Minutes to get out of bed</div>
+          <div class="data-item">Use alarm clock? (Y/N)</div>
+          <div class="data-item conditional">Wake before alarm? (if alarm = yes)</div>
+        </div>
+      `,
+      notes: [
+        { type: "design", label: "UX Guidance", text: "Time pickers should use clock-face or scroll-wheel style inputs — not keyboard entry. For minutes, use a simple slider. Conditional question should animate in smoothly when alarm = yes." },
+        { type: "warn", label: "Edge Case", text: "Some patients may have irregular schedules. Prompt \"Think about a typical workday\" to anchor their answers." }
+      ]
+    },
+    {
+      phase: "Baseline Questionnaire",
+      type: "input", typeLabel: "User Input",
+      title: "C. Free Day Sleep",
+      desc: "Section 3 of 7 — Typical sleep patterns on days off. This is the key chronotype signal.",
+      content: `
+        <div class="data-grid">
+          <div class="data-item">Bedtime (get into bed)</div>
+          <div class="data-item">Try-to-sleep time</div>
+          <div class="data-item">Minutes to fall asleep</div>
+          <div class="data-item">Wake-up time</div>
+          <div class="data-item">Minutes to get out of bed</div>
+          <div class="data-item">Use alarm clock? (Y/N)</div>
+          <div class="data-item">Free to choose sleep/wake times?</div>
+          <div class="data-item conditional">What prevents free choice? (if no)</div>
+        </div>
+      `,
+      notes: [
+        { type: "design", label: "UX Guidance", text: "Re-use the same layout from Workday Sleep. Familiarity reduces friction. The patient already knows how to answer these — they just did it." }
+      ]
+    },
+    {
+      phase: "Baseline Questionnaire",
+      type: "input", typeLabel: "User Input",
+      title: "D. Sleep Habits",
+      desc: "Section 4 of 7 — Quick snapshot of nighttime wakefulness and napping.",
+      content: `
+        <div class="data-grid">
+          <div class="data-item">Minutes awake during the night (typical)</div>
+          <div class="data-item">Typical nap duration (min, 0 if none)</div>
+        </div>
+      `,
+      notes: [
+        { type: "design", label: "UX Guidance", text: "Only 2 questions — this section should feel like a breather. Quick slider for each. Reinforce progress: \"Almost halfway through.\"" }
+      ]
+    },
+    {
+      phase: "Baseline Questionnaire",
+      type: "input", typeLabel: "User Input",
+      title: "E. Work Details",
+      desc: "Section 5 of 7 — Schedule, flexibility, and commute patterns.",
+      content: `
+        <div class="data-grid">
+          <div class="data-item">Shift worker? (Y/N)</div>
+          <div class="data-item">Work start time</div>
+          <div class="data-item">Work end time</div>
+          <div class="data-item">Schedule flexibility (0–4 scale)</div>
+          <div class="data-item">Commute type (Enclosed / Outside / None)</div>
+          <div class="data-item">Commute to work (min)</div>
+          <div class="data-item">Commute from work (min)</div>
+        </div>
+      `,
+      notes: [
+        { type: "design", label: "UX Guidance", text: "For flexibility scale, use labeled options: 0 = \"Completely fixed\" to 4 = \"Completely flexible.\" Commute type matters because outside commute = natural light exposure." }
+      ]
+    },
+    {
+      phase: "Baseline Questionnaire",
+      type: "input", typeLabel: "User Input",
+      title: "F. Outdoor Time",
+      desc: "Section 6 of 7 — Natural light exposure on work and free days.",
+      content: `
+        <div class="data-grid">
+          <div class="data-item">Hours outdoors on workdays</div>
+          <div class="data-item">Hours outdoors on free days</div>
+        </div>
+      `,
+      notes: [
+        { type: "design", label: "UX Guidance", text: "Another short section. Use a visual slider with sun icons. Reinforce: \"Almost done — 2 more questions.\"" }
+      ]
+    },
+    {
+      phase: "Baseline Questionnaire",
+      type: "input", typeLabel: "User Input",
+      title: "G. Stimulants & Substances",
+      desc: "Section 7 of 7 — Daily intake that affects circadian rhythm and sleep quality.",
+      content: `
+        <div class="data-grid">
+          <div class="data-item">Coffee (cups/day)</div>
+          <div class="data-item">Tea (cups/day)</div>
+          <div class="data-item">Soft drinks (cans/day)</div>
+          <div class="data-item">Beer (glasses/day)</div>
+          <div class="data-item">Wine (glasses/day)</div>
+          <div class="data-item">Liquor (drinks/day)</div>
+          <div class="data-item">Cigarettes (per day)</div>
+          <div class="data-item">Sleep medication (doses/week)</div>
+        </div>
+      `,
+      notes: [
+        { type: "design", label: "UX Guidance", text: "Use simple +/- steppers for each. Default all to 0. Patient just taps + for what applies. No typing required." },
+        { type: "hooked", label: "Hooked · Variable Reward", text: "After this last section, the patient gets something back — their personalized schedule. Framing the questionnaire as \"tell us about you so we can build your plan\" turns data entry into an investment toward a reward." }
+      ]
+    },
+    {
+      phase: "Calculate & Personalize",
+      type: "system", typeLabel: "System",
+      title: "Building Your Schedule",
+      desc: "System processes all baseline data to calculate the optimal light therapy window and recommended wake time.",
+      content: ``,
+      notes: [
+        { type: "design", label: "UX Guidance", text: "Show a brief loading moment — \"Building your schedule...\" with a subtle animation. Don't make it instant; a 2–3 second pause signals the system is doing real work with their answers. This is a moment of anticipation." },
+        { type: "hooked", label: "Hooked · Reward Moment", text: "The pause before the reveal is part of the reward. The patient invested effort in 30+ questions. Now they see the payoff: a plan built just for them." }
+      ]
+    },
+    {
+      phase: "Set Tomorrow's Alarm",
+      type: "screen", typeLabel: "Screen",
+      title: "Your Recommended Window",
+      desc: "Show the patient their personalized light therapy window for tomorrow. Large, clear time display. Brief explanation of why this window matters.",
+      content: ``,
+      notes: [
+        { type: "superbetter", label: "SuperBetter · Power-up", text: "The recommended window is the patient's first \"power-up.\" It's personal, it's based on their data, and it gives them a concrete action for tomorrow. This is the moment the trial stops being abstract and becomes real." }
+      ]
+    },
+    {
+      phase: "Set Tomorrow's Alarm",
+      type: "action", typeLabel: "User Action",
+      title: "Set Alarm for Tomorrow",
+      desc: "Patient confirms or adjusts the suggested wake-up time. Single tap to set. This is the commitment moment — the bridge between today's setup and tomorrow's first session.",
+      content: ``,
+      notes: [
+        { type: "warn", label: "Critical Moment", text: "This is THE key action of Day 0. Everything before builds to this. Everything after is bonus. The alarm is what bridges today's setup to tomorrow's first session." },
+        { type: "hooked", label: "Hooked · Investment", text: "Setting the alarm is the patient's biggest investment of Day 0. They're making a commitment to future action. This stored value increases the likelihood they follow through tomorrow." }
+      ]
+    },
+    {
+      phase: "Connect Entertainment",
+      type: "optional", typeLabel: "Optional",
+      title: "Connect Entertainment Apps",
+      desc: "Invite the patient to log into streaming and social apps so content is ready for tomorrow's session. Clearly marked as optional.",
+      content: `
+        <div class="data-grid triple">
+          <div class="data-item" style="text-align:center">Netflix</div>
+          <div class="data-item" style="text-align:center">YouTube</div>
+          <div class="data-item" style="text-align:center">Instagram</div>
+          <div class="data-item" style="text-align:center">Facebook</div>
+          <div class="data-item" style="text-align:center">Spotify</div>
+          <div class="data-item" style="text-align:center">Other</div>
+        </div>
+      `,
+      notes: [
+        { type: "design", label: "UX Guidance", text: "Show app icons in a grid. Tapping one opens the login flow for that app. \"You can always do this later\" should be visible. Skip button is prominent." },
+        { type: "hooked", label: "Hooked · Reducing Action Friction", text: "If entertainment is pre-loaded, tomorrow's session has one less barrier. The patient wakes up, sits down, and content is already there. The easier the action, the more likely the habit forms." }
+      ]
+    },
+    {
+      phase: "Connect Entertainment",
+      type: "system", typeLabel: "System",
+      title: "Schedule Reminder (If Skipped)",
+      desc: "If the patient skips entertainment setup, schedule a push notification for later that evening.",
+      content: `
+        <div class="data-grid single">
+          <div class="data-item">Push notification: "Quick tip — log into your favorite app before bed so it's ready for tomorrow morning."</div>
+        </div>
+      `,
+      notes: [
+        { type: "design", label: "Timing", text: "Send the reminder ~2 hours before the patient's reported bedtime (from questionnaire data). Not too early (forgotten), not too late (annoying)." }
+      ]
+    },
+    {
+      phase: "Dashboard Empty State",
+      type: "screen", typeLabel: "Screen",
+      title: "Dashboard — Empty State",
+      desc: "Patient lands on the main dashboard for the first time. Empty but not bare — it previews what's coming tomorrow and throughout the trial.",
+      content: `
+        <div class="data-grid single">
+          <div class="data-item">Score area → "Your score will appear after your first session"</div>
+          <div class="data-item">Session tracker → Day 1 highlighted, rest empty: "Your streak starts tomorrow"</div>
+          <div class="data-item">Tomorrow's session → Time + "Your first session is set for [time]"</div>
+          <div class="data-item">Progress area → gentle preview of what gets filled over time</div>
+        </div>
+      `,
+      notes: [
+        { type: "design", label: "UX Guidance", text: "The dashboard should feel like a calm room they've just walked into, with labeled spots for things that will arrive. Think hotel room with your name on the door, not an empty spreadsheet." },
+        { type: "superbetter", label: "SuperBetter · Quest Preview", text: "This is the quest map before the journey begins. The patient can see the path laid out. Seeing the empty tracker with Day 1 highlighted creates anticipation — a desire to \"start filling it in.\"" },
+        { type: "warn", label: "Key Principle", text: "The patient should think \"I know exactly what happens next\" — not \"there's so much to fill in.\" Orientation without overwhelm." }
+      ]
+    },
+    {
+      phase: "Day 0 Complete",
+      type: "complete", typeLabel: "Complete",
+      title: "First Day Done",
+      desc: "Patient has completed setup. Alarm is set. They know what tomorrow looks like. The app goes quiet until morning.",
+      content: `
+        <div class="summary-list">
+          <div class="summary-row"><span class="sl">Light therapy</span><span class="sv">None (starts Day 1)</span></div>
+          <div class="summary-row"><span class="sl">Setup time</span><span class="sv">~10–15 minutes</span></div>
+          <div class="summary-row"><span class="sl">Data collected</span><span class="sv">Baseline survey (7 sections)</span></div>
+          <div class="summary-row"><span class="sl">Key commitment</span><span class="sv">Alarm set for first session</span></div>
+          <div class="summary-row"><span class="sl">Optional</span><span class="sv">Entertainment apps connected</span></div>
+          <div class="summary-row"><span class="sl">Day 1 trigger</span><span class="sv">Alarm at recommended time</span></div>
+        </div>
+        <div style="margin-top:20px">
+          <div class="edge-case"><strong>What if the patient is too tired to finish?</strong><p>Save progress. Let them resume. Auto-save after each section.</p></div>
+          <div class="edge-case"><strong>What if device arrives in the evening?</strong><p>Fine — alarm still set for tomorrow. Remind to charge iPad overnight.</p></div>
+          <div class="edge-case"><strong>What if they skip the questionnaire?</strong><p>Don't allow it — data is required. But break it into small enough pieces that it never feels heavy.</p></div>
+          <div class="edge-case"><strong>What if they struggle with technology?</strong><p>The printed card is the safety net. Good enough to get from "box open" to "alarm set."</p></div>
+        </div>
+      `,
+      notes: [
+        { type: "hooked", label: "Hooked · Full Cycle Primed", text: "The alarm is the trigger for tomorrow. Entertainment removes friction from the action. The personalized schedule is the variable reward. The questionnaire and alarm are the investment. The full Hook cycle is loaded and ready for Day 1." }
+      ]
+    }
+  ]
+};
+
+// ─── STATE ───
+const state = { first: 0, normal: 0, last: 0 };
+let activeTab = 'first';
+
+// ─── TAB SWITCHING ───
+function switchTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    t.classList.toggle('active', ['first','normal','last'][i] === tab);
+  });
+  document.querySelectorAll('.flow-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+}
+
+// ─── RENDER FLOW ───
+function renderFlow(flowKey) {
+  const data = flows[flowKey];
+  if (!data) return;
+  const current = state[flowKey];
+
+  // Build step bar
+  const stepNav = document.getElementById('stepnav-' + flowKey);
+  let phases = [];
+  data.forEach((s, i) => {
+    if (!phases.length || phases[phases.length-1].name !== s.phase) {
+      phases.push({ name: s.phase, start: i, end: i });
+    } else {
+      phases[phases.length-1].end = i;
+    }
+  });
+
+  let barHTML = '<div class="step-bar">';
+  data.forEach((s, i) => {
+    const cls = i < current ? 'completed' : i === current ? 'active' : '';
+    barHTML += `<div class="step-dot-wrap ${cls}" onclick="goToStep('${flowKey}', ${i})"><div class="step-dot">${i+1}</div></div>`;
+    if (i < data.length - 1) {
+      barHTML += `<div class="step-line ${i < current ? 'completed' : ''}"></div>`;
+    }
+  });
+  barHTML += '</div>';
+  barHTML += '<div class="step-labels" id="steplabels-' + flowKey + '"></div>';
+  stepNav.innerHTML = barHTML;
+
+  // Position labels under phase midpoints
+  requestAnimationFrame(() => {
+    const labelContainer = document.getElementById('steplabels-' + flowKey);
+    const dots = stepNav.querySelectorAll('.step-dot-wrap');
+    if (!dots.length || !labelContainer) return;
+    labelContainer.innerHTML = '';
+    phases.forEach(p => {
+      const midIdx = Math.floor((p.start + p.end) / 2);
+      const dot = dots[midIdx];
+      if (!dot) return;
+      const rect = dot.getBoundingClientRect();
+      const navRect = stepNav.getBoundingClientRect();
+      const left = rect.left - navRect.left + rect.width / 2;
+      const isActive = current >= p.start && current <= p.end;
+      const isCompleted = current > p.end;
+      labelContainer.innerHTML += `<div class="step-label ${isActive ? 'active' : isCompleted ? 'completed' : ''}" style="left:${left}px" onclick="goToStep('${flowKey}', ${p.start})">${p.name}</div>`;
+    });
+  });
+
+  // Build cards
+  const container = document.getElementById('cards-' + flowKey);
+  let cardsHTML = '';
+  data.forEach((s, i) => {
+    const typeClass = {
+      physical: 't-physical', screen: 't-screen', input: 't-input',
+      action: 't-action', system: 't-system', optional: 't-optional', complete: 't-complete'
+    }[s.type] || 't-screen';
+
+    let notesHTML = '';
+    if (s.notes) {
+      s.notes.forEach(n => {
+        const noteClass = {
+          design: 'note-design', warn: 'note-warn', hooked: 'note-hooked', superbetter: 'note-superbetter'
+        }[n.type] || 'note-design';
+        notesHTML += `<div class="note-card ${noteClass}"><strong>${n.label}</strong>${n.text}</div>`;
+      });
+    }
+
+    cardsHTML += `
+      <div class="card">
+        <div class="card-main">
+          <div class="card-type ${typeClass}">${s.typeLabel}</div>
+          <h2>${s.title}</h2>
+          <p>${s.desc}</p>
+          ${s.content || ''}
+        </div>
+        ${notesHTML ? `<div class="card-sidebar">${notesHTML}</div>` : ''}
+      </div>
+    `;
+  });
+  container.innerHTML = cardsHTML;
+  container.style.transform = `translateX(-${current * 100}%)`;
+
+  // Counter
+  document.getElementById('counter-' + flowKey).textContent = `${current + 1} of ${data.length}`;
+
+  // Buttons
+  document.getElementById('back-' + flowKey).style.visibility = current === 0 ? 'hidden' : 'visible';
+  const nextBtn = document.getElementById('next-' + flowKey);
+  if (current === data.length - 1) {
+    nextBtn.innerHTML = 'Done <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>';
+  } else {
+    nextBtn.innerHTML = 'Next <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+  }
+}
+
+function nextStep(flowKey) {
+  const data = flows[flowKey];
+  if (!data) return;
+  if (state[flowKey] < data.length - 1) {
+    state[flowKey]++;
+    renderFlow(flowKey);
+  }
+}
+
+function prevStep(flowKey) {
+  if (state[flowKey] > 0) {
+    state[flowKey]--;
+    renderFlow(flowKey);
+  }
+}
+
+function goToStep(flowKey, idx) {
+  state[flowKey] = idx;
+  renderFlow(flowKey);
+}
+
+// ─── KEYBOARD NAVIGATION ───
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') nextStep(activeTab);
+  if (e.key === 'ArrowLeft') prevStep(activeTab);
+});
+
+// ─── INIT ───
+renderFlow('first');
+window.addEventListener('resize', () => renderFlow(activeTab));
+</script>
+</body>
+</html>

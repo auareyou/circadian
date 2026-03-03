@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Circadian — Playful Score Explorations</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Serif+Display&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --cream: #FBF6F0;
+    --terracotta: #C4724E;
+    --sage: #7BA577;
+    --sage-dark: #5E9459;
+    --gold: #D4A853;
+    --gold-light: #F5E6C4;
+    --deep-brown: #3D2E2A;
+    --rose: #E88B7A;
+    --lavender: #A78BFA;
+    --teal: #4ECDC4;
+    --text-1: #2C2320;
+    --text-2: #6B5D55;
+    --text-3: #A89B93;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #131313;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-top: 16px;
+    max-width: 640px;
+  }
+
+  .page-header h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 22px;
+    color: #eee;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .page-header p {
+    font-size: 13px;
+    color: #888;
+    line-height: 1.6;
+  }
+
+  /* Concept container */
+  .concept {
+    width: 100%;
+    max-width: 1100px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .concept-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .concept-number {
+    font-family: 'DM Serif Display', serif;
+    font-size: 36px;
+    color: #333;
+  }
+
+  .concept-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #ddd;
+  }
+
+  .concept-desc {
+    font-size: 13px;
+    color: #888;
+    line-height: 1.6;
+    max-width: 600px;
+    margin-left: 48px;
+    margin-top: -8px;
+  }
+
+  .concept-frames {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .frame-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .frame-label {
+    font-size: 10px;
+    color: #666;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .frame {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  }
+
+  /* ====================================================
+     CONCEPT 1: THE GARDEN — Organic growth metaphor
+     ==================================================== */
+  .garden-score {
+    width: 340px;
+    height: 420px;
+    background: var(--cream);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .garden-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-3);
+    margin-bottom: 16px;
+    align-self: flex-start;
+  }
+
+  .garden-visual {
+    width: 200px;
+    height: 200px;
+    position: relative;
+    margin-bottom: 20px;
+  }
+
+  .garden-ground {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: linear-gradient(180deg, #D4C4A8, #C4B494);
+    border-radius: 0 0 100px 100px;
+  }
+
+  .garden-plant {
+    position: absolute;
+    bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .plant-1 { left: 30px; }
+  .plant-2 { left: 75px; }
+  .plant-3 { left: 120px; }
+  .plant-4 { left: 160px; }
+
+  .stem {
+    width: 3px;
+    background: linear-gradient(180deg, #8BA888, #6E9A6B);
+    border-radius: 2px;
+    transform-origin: bottom center;
+  }
+
+  .bloom {
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    animation: sway 3s ease-in-out infinite;
+  }
+
+  .plant-1 .stem { height: 80px; }
+  .plant-1 .bloom { width: 32px; height: 32px; animation-delay: 0s; }
+
+  .plant-2 .stem { height: 110px; }
+  .plant-2 .bloom { width: 38px; height: 38px; animation-delay: 0.5s; }
+
+  .plant-3 .stem { height: 65px; }
+  .plant-3 .bloom { width: 28px; height: 28px; animation-delay: 1s; }
+
+  .plant-4 .stem { height: 40px; }
+  .plant-4 .bloom { width: 22px; height: 22px; background: #DDD8CF; animation-delay: 1.5s; }
+
+  /* Bud that hasn't bloomed */
+  .plant-4 .bloom { font-size: 12px; }
+
+  @keyframes sway {
+    0%, 100% { transform: rotate(-2deg); }
+    50% { transform: rotate(2deg); }
+  }
+
+  .garden-score-text {
+    text-align: center;
+  }
+
+  .garden-score-text .number {
+    font-family: 'DM Serif Display', serif;
+    font-size: 42px;
+    color: var(--text-1);
+    line-height: 1;
+  }
+
+  .garden-score-text .unit {
+    font-size: 13px;
+    color: var(--sage);
+    font-weight: 600;
+    margin-top: 2px;
+  }
+
+  .garden-score-text .sub {
+    font-size: 12px;
+    color: var(--text-3);
+    margin-top: 6px;
+  }
+
+  .garden-message {
+    margin-top: auto;
+    padding: 12px 18px;
+    background: white;
+    border-radius: 14px;
+    font-size: 13px;
+    color: var(--text-2);
+    text-align: center;
+    line-height: 1.5;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  .garden-message strong { color: var(--sage-dark); }
+
+  /* Low state garden */
+  .garden-visual.low .plant-1 .stem { height: 35px; }
+  .garden-visual.low .plant-1 .bloom { width: 22px; height: 22px; font-size: 14px; }
+  .garden-visual.low .plant-2 .stem { height: 50px; }
+  .garden-visual.low .plant-2 .bloom { width: 26px; height: 26px; font-size: 16px; }
+  .garden-visual.low .plant-3 .stem { height: 20px; }
+  .garden-visual.low .plant-3 .bloom { width: 18px; height: 18px; font-size: 10px; background: #DDD8CF; }
+  .garden-visual.low .plant-4 { display: none; }
+
+  /* ====================================================
+     CONCEPT 2: THE SUNRISE — Light fills the sky
+     ==================================================== */
+  .sunrise-score {
+    width: 340px;
+    height: 420px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sunrise-sky {
+    position: absolute;
+    inset: 0;
+  }
+
+  .sunrise-sky.high {
+    background: linear-gradient(180deg,
+      #87CEEB 0%,
+      #FFE4B5 40%,
+      #FFDAB9 60%,
+      #FFB88C 80%,
+      #E8A882 100%
+    );
+  }
+
+  .sunrise-sky.mid {
+    background: linear-gradient(180deg,
+      #4A6FA5 0%,
+      #7BA3CC 20%,
+      #C4A882 50%,
+      #D4A060 70%,
+      #C48A5A 100%
+    );
+  }
+
+  .sunrise-sky.low {
+    background: linear-gradient(180deg,
+      #2C3E6B 0%,
+      #4A5A80 30%,
+      #6A6878 50%,
+      #8A7A70 70%,
+      #7A6A5A 100%
+    );
+  }
+
+  .sunrise-sun {
+    position: absolute;
+    border-radius: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .sunrise-sky.high .sunrise-sun {
+    width: 80px;
+    height: 80px;
+    bottom: 45%;
+    background: radial-gradient(circle, #FFF8E1, #FFD54F);
+    box-shadow: 0 0 60px rgba(255,213,79,0.6), 0 0 120px rgba(255,213,79,0.3);
+  }
+
+  .sunrise-sky.mid .sunrise-sun {
+    width: 70px;
+    height: 70px;
+    bottom: 25%;
+    background: radial-gradient(circle, #FFE082, #FFB74D);
+    box-shadow: 0 0 40px rgba(255,183,77,0.5);
+  }
+
+  .sunrise-sky.low .sunrise-sun {
+    width: 60px;
+    height: 60px;
+    bottom: 8%;
+    background: radial-gradient(circle, #FFCC80, #FF8A65);
+    box-shadow: 0 0 30px rgba(255,138,101,0.4);
+  }
+
+  /* Horizon */
+  .sunrise-horizon {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+  }
+
+  .sunrise-sky.high .sunrise-horizon {
+    background: linear-gradient(180deg, transparent, rgba(139,186,139,0.3));
+  }
+
+  .sunrise-sky.mid .sunrise-horizon {
+    background: linear-gradient(180deg, transparent, rgba(100,120,100,0.4));
+  }
+
+  .sunrise-sky.low .sunrise-horizon {
+    background: linear-gradient(180deg, transparent, rgba(60,70,60,0.5));
+  }
+
+  .sunrise-content {
+    position: relative;
+    z-index: 2;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .sunrise-top-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+
+  .sunrise-sky.high .sunrise-top-label { color: rgba(60,40,30,0.5); }
+  .sunrise-sky.mid .sunrise-top-label { color: rgba(255,255,255,0.5); }
+  .sunrise-sky.low .sunrise-top-label { color: rgba(255,255,255,0.4); }
+
+  .sunrise-main-score {
+    font-family: 'DM Serif Display', serif;
+    font-size: 56px;
+    line-height: 1;
+  }
+
+  .sunrise-sky.high .sunrise-main-score { color: var(--deep-brown); }
+  .sunrise-sky.mid .sunrise-main-score { color: white; }
+  .sunrise-sky.low .sunrise-main-score { color: rgba(255,255,255,0.8); }
+
+  .sunrise-subtitle {
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 4px;
+  }
+
+  .sunrise-sky.high .sunrise-subtitle { color: rgba(60,40,30,0.6); }
+  .sunrise-sky.mid .sunrise-subtitle { color: rgba(255,255,255,0.7); }
+  .sunrise-sky.low .sunrise-subtitle { color: rgba(255,255,255,0.5); }
+
+  .sunrise-bottom {
+    margin-top: auto;
+    padding: 14px 18px;
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    font-size: 13px;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .sunrise-sky.high .sunrise-bottom {
+    background: rgba(255,255,255,0.5);
+    color: var(--deep-brown);
+  }
+
+  .sunrise-sky.mid .sunrise-bottom {
+    background: rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.9);
+  }
+
+  .sunrise-sky.low .sunrise-bottom {
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.7);
+  }
+
+  /* ====================================================
+     CONCEPT 3: THE PATH — Journey metaphor
+     ==================================================== */
+  .path-score {
+    width: 340px;
+    height: 420px;
+    background: var(--cream);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .path-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-3);
+    margin-bottom: 16px;
+  }
+
+  .path-visual {
+    flex: 1;
+    position: relative;
+    margin-bottom: 16px;
+  }
+
+  .path-track {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    transform: translateX(-50%);
+    background: #E8E0D8;
+    border-radius: 3px;
+  }
+
+  .path-filled {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 6px;
+    transform: translateX(-50%);
+    border-radius: 3px;
+  }
+
+  .path-filled.high {
+    height: 85%;
+    background: linear-gradient(180deg, var(--sage), var(--sage-dark));
+  }
+
+  .path-filled.mid {
+    height: 55%;
+    background: linear-gradient(180deg, var(--gold), #C49A42);
+  }
+
+  .path-filled.low {
+    height: 25%;
+    background: linear-gradient(180deg, var(--rose), #D47A6A);
+  }
+
+  .path-milestone {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    white-space: nowrap;
+  }
+
+  .milestone-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    flex-shrink: 0;
+    z-index: 1;
+  }
+
+  .milestone-dot.done {
+    background: var(--sage);
+    color: white;
+  }
+
+  .milestone-dot.current {
+    background: var(--terracotta);
+    color: white;
+    box-shadow: 0 0 0 4px rgba(196,114,78,0.2);
+    width: 26px;
+    height: 26px;
+    font-size: 12px;
+  }
+
+  .milestone-dot.upcoming {
+    background: #E8E0D8;
+    color: var(--text-3);
+  }
+
+  .milestone-text {
+    font-size: 11px;
+    color: var(--text-2);
+    font-weight: 500;
+  }
+
+  .milestone-text.faded { color: var(--text-3); }
+
+  .path-walker {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 24px;
+    z-index: 2;
+    animation: walk 2s ease-in-out infinite;
+  }
+
+  @keyframes walk {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-4px); }
+  }
+
+  .path-message {
+    padding: 12px 16px;
+    background: white;
+    border-radius: 14px;
+    font-size: 13px;
+    color: var(--text-2);
+    text-align: center;
+    line-height: 1.5;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  .path-message strong { color: var(--terracotta); }
+
+  /* ====================================================
+     CONCEPT 4: THE STREAK FLAME — Kinetic energy
+     ==================================================== */
+  .flame-score {
+    width: 340px;
+    height: 420px;
+    background: #1C1B2E;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .flame-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.3);
+    margin-bottom: 20px;
+    align-self: flex-start;
+  }
+
+  .flame-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .flame-emoji {
+    font-size: 100px;
+    animation: flicker 1.5s ease-in-out infinite alternate;
+    filter: drop-shadow(0 0 20px rgba(255,140,50,0.4));
+  }
+
+  .flame-emoji.small {
+    font-size: 60px;
+    filter: drop-shadow(0 0 10px rgba(255,140,50,0.2));
+  }
+
+  .flame-emoji.tiny {
+    font-size: 36px;
+    filter: none;
+    opacity: 0.6;
+  }
+
+  @keyframes flicker {
+    0% { transform: scale(1) rotate(-1deg); }
+    50% { transform: scale(1.05) rotate(1deg); }
+    100% { transform: scale(1.02) rotate(-0.5deg); }
+  }
+
+  .flame-number {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 64px;
+    font-weight: 800;
+    color: white;
+    margin-top: 8px;
+    line-height: 1;
+    text-shadow: 0 0 40px rgba(255,140,50,0.3);
+  }
+
+  .flame-number.dim {
+    color: rgba(255,255,255,0.5);
+    text-shadow: none;
+  }
+
+  .flame-unit {
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 4px;
+  }
+
+  .flame-unit.hot { color: #FFB347; }
+  .flame-unit.warm { color: #C49A42; }
+  .flame-unit.cool { color: rgba(255,255,255,0.3); }
+
+  .flame-streak-bar {
+    display: flex;
+    gap: 6px;
+    margin-top: 20px;
+  }
+
+  .streak-pip {
+    width: 28px;
+    height: 6px;
+    border-radius: 3px;
+  }
+
+  .streak-pip.lit { background: linear-gradient(90deg, #FF6B35, #FFB347); }
+  .streak-pip.unlit { background: rgba(255,255,255,0.08); }
+
+  .flame-message {
+    margin-top: auto;
+    padding: 12px 18px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.06);
+    font-size: 13px;
+    text-align: center;
+    line-height: 1.5;
+    width: 100%;
+  }
+
+  .flame-message.hot { color: #FFB347; }
+  .flame-message.warm { color: rgba(255,255,255,0.6); }
+  .flame-message.cool { color: rgba(255,255,255,0.4); }
+
+  .flame-message strong { color: white; }
+
+  /* Glow bg effect */
+  .flame-glow {
+    position: absolute;
+    bottom: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .flame-glow.hot { background: radial-gradient(circle, rgba(255,140,50,0.15), transparent); }
+  .flame-glow.warm { background: radial-gradient(circle, rgba(255,140,50,0.08), transparent); }
+  .flame-glow.cool { background: none; }
+
+  /* ====================================================
+     CONCEPT 5: THE RING — Satisfying completion
+     ==================================================== */
+  .ring-score {
+    width: 340px;
+    height: 420px;
+    background: var(--cream);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .ring-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-3);
+    margin-bottom: 20px;
+    align-self: flex-start;
+  }
+
+  .ring-visual {
+    width: 180px;
+    height: 180px;
+    position: relative;
+    margin-bottom: 20px;
+  }
+
+  .ring-visual svg { width: 100%; height: 100%; }
+
+  .ring-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ring-center .emoji { font-size: 28px; margin-bottom: 4px; }
+
+  .ring-center .score {
+    font-family: 'DM Serif Display', serif;
+    font-size: 36px;
+    color: var(--text-1);
+    line-height: 1;
+  }
+
+  .ring-center .out-of {
+    font-size: 12px;
+    color: var(--text-3);
+    margin-top: 2px;
+  }
+
+  .ring-breakdown {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    width: 100%;
+  }
+
+  .ring-metric {
+    flex: 1;
+    text-align: center;
+    padding: 12px 8px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  }
+
+  .ring-metric .icon { font-size: 18px; margin-bottom: 4px; display: block; }
+  .ring-metric .val { font-size: 16px; font-weight: 700; color: var(--text-1); }
+  .ring-metric .name { font-size: 9px; color: var(--text-3); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+  .ring-message {
+    margin-top: auto;
+    padding: 12px 18px;
+    background: white;
+    border-radius: 14px;
+    font-size: 13px;
+    color: var(--text-2);
+    text-align: center;
+    line-height: 1.5;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    width: 100%;
+  }
+
+  .ring-message strong { color: var(--sage-dark); }
+
+  /* ====================================================
+     CONCEPT 6: THE WEATHER — Ambient score
+     ==================================================== */
+  .weather-score {
+    width: 340px;
+    height: 420px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .weather-bg {
+    position: absolute;
+    inset: 0;
+  }
+
+  .weather-bg.sunny {
+    background: linear-gradient(180deg, #87CEEB 0%, #B5E3F5 40%, #FFF8E1 90%);
+  }
+
+  .weather-bg.partly {
+    background: linear-gradient(180deg, #8FAFC4 0%, #B5C8D4 40%, #E8DDD0 90%);
+  }
+
+  .weather-bg.cloudy {
+    background: linear-gradient(180deg, #8494A0 0%, #A0AAB2 40%, #C4BEB5 90%);
+  }
+
+  .weather-content {
+    position: relative;
+    z-index: 2;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .weather-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .weather-bg.sunny .weather-label { color: rgba(60,50,30,0.4); }
+  .weather-bg.partly .weather-label { color: rgba(60,50,30,0.35); }
+  .weather-bg.cloudy .weather-label { color: rgba(60,50,30,0.3); }
+
+  .weather-main {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+
+  .weather-icon {
+    font-size: 64px;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+  }
+
+  .weather-temp {
+    font-family: 'DM Serif Display', serif;
+    font-size: 52px;
+    line-height: 1;
+  }
+
+  .weather-bg.sunny .weather-temp { color: #3D2E2A; }
+  .weather-bg.partly .weather-temp { color: #4A3F38; }
+  .weather-bg.cloudy .weather-temp { color: #5A504A; }
+
+  .weather-condition {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 24px;
+  }
+
+  .weather-bg.sunny .weather-condition { color: rgba(60,40,30,0.6); }
+  .weather-bg.partly .weather-condition { color: rgba(60,50,40,0.5); }
+  .weather-bg.cloudy .weather-condition { color: rgba(60,50,40,0.45); }
+
+  .weather-forecast {
+    display: flex;
+    gap: 12px;
+    margin-bottom: auto;
+  }
+
+  .forecast-day {
+    text-align: center;
+    padding: 10px 8px;
+    border-radius: 12px;
+    min-width: 52px;
+  }
+
+  .weather-bg.sunny .forecast-day { background: rgba(255,255,255,0.4); }
+  .weather-bg.partly .forecast-day { background: rgba(255,255,255,0.3); }
+  .weather-bg.cloudy .forecast-day { background: rgba(255,255,255,0.2); }
+
+  .forecast-day .day { font-size: 10px; font-weight: 600; color: rgba(60,40,30,0.4); margin-bottom: 4px; }
+  .forecast-day .icon { font-size: 20px; margin-bottom: 2px; display: block; }
+  .forecast-day .score { font-size: 12px; font-weight: 700; color: rgba(60,40,30,0.7); }
+
+  .weather-bottom {
+    padding: 14px 18px;
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    font-size: 13px;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .weather-bg.sunny .weather-bottom { background: rgba(255,255,255,0.5); color: #3D2E2A; }
+  .weather-bg.partly .weather-bottom { background: rgba(255,255,255,0.35); color: #4A3F38; }
+  .weather-bg.cloudy .weather-bottom { background: rgba(255,255,255,0.25); color: #5A504A; }
+
+  /* Divider */
+  .divider {
+    width: 100%;
+    max-width: 1100px;
+    height: 1px;
+    background: #2a2a2a;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Playful Score Explorations</h1>
+  <p>Six ways to show session/treatment score. Each concept shown at three states: high (85%+), medium (55-70%), and low/starting (under 40%). The score should always feel encouraging — even a low score should feel like a beginning, never a failure.</p>
+</div>
+
+<!-- =============== CONCEPT 1: THE GARDEN =============== -->
+<div class="concept">
+  <div class="concept-header">
+    <span class="concept-number">01</span>
+    <span class="concept-title">The Garden — Your sessions grow things</span>
+  </div>
+  <p class="concept-desc">Each completed session grows a flower. Partial sessions grow smaller. The garden fills over the treatment. Patients feel ownership — "I grew that." From SuperBetter: framing progress as something alive you're nurturing.</p>
+
+  <div class="concept-frames">
+    <!-- High -->
+    <div class="frame-wrapper">
+      <span class="frame-label">High · 85%</span>
+      <div class="frame">
+        <div class="garden-score">
+          <p class="garden-label">Your Light Garden</p>
+          <div class="garden-visual">
+            <div class="garden-ground"></div>
+            <div class="garden-plant plant-1"><div class="bloom">🌸</div><div class="stem"></div></div>
+            <div class="garden-plant plant-2"><div class="bloom">🌻</div><div class="stem"></div></div>
+            <div class="garden-plant plant-3"><div class="bloom">🌷</div><div class="stem"></div></div>
+            <div class="garden-plant plant-4"><div class="bloom">🌱</div><div class="stem"></div></div>
+          </div>
+          <div class="garden-score-text">
+            <p class="number">85</p>
+            <p class="unit">session score</p>
+            <p class="sub">4 flowers bloomed this week</p>
+          </div>
+          <div class="garden-message">Your garden is <strong>thriving</strong>! One more session and you'll unlock a new flower.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Medium -->
+    <div class="frame-wrapper">
+      <span class="frame-label">Medium · 62%</span>
+      <div class="frame">
+        <div class="garden-score">
+          <p class="garden-label">Your Light Garden</p>
+          <div class="garden-visual">
+            <div class="garden-ground"></div>
+            <div class="garden-plant plant-1"><div class="bloom">🌸</div><div class="stem" style="height:60px"></div></div>
+            <div class="garden-plant plant-2"><div class="bloom">🌷</div><div class="stem" style="height:75px"></div></div>
+            <div class="garden-plant plant-3"><div class="bloom">🌱</div><div class="stem" style="height:30px"></div></div>
+          </div>
+          <div class="garden-score-text">
+            <p class="number">62</p>
+            <p class="unit">session score</p>
+            <p class="sub">2 flowers, 1 sprouting</p>
+          </div>
+          <div class="garden-message">Your garden is <strong>growing</strong>. A full session tomorrow will make that sprout bloom!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Low -->
+    <div class="frame-wrapper">
+      <span class="frame-label">Low · 30%</span>
+      <div class="frame">
+        <div class="garden-score">
+          <p class="garden-label">Your Light Garden</p>
+          <div class="garden-visual low">
+            <div class="garden-ground"></div>
+            <div class="garden-plant plant-1"><div class="bloom">🌱</div><div class="stem"></div></div>
+            <div class="garden-plant plant-2"><div class="bloom">🌱</div><div class="stem"></div></div>
+            <div class="garden-plant plant-3"><div class="bloom" style="font-size:8px">🌱</div><div class="stem"></div></div>
+          </div>
+          <div class="garden-score-text">
+            <p class="number">30</p>
+            <p class="unit">session score</p>
+            <p class="sub">Seeds planted, ready to grow</p>
+          </div>
+          <div class="garden-message">Every garden starts with <strong>seeds</strong>. Your next full session will bring your first bloom.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- =============== CONCEPT 2: THE SUNRISE =============== -->
+<div class="concept">
+  <div class="concept-header">
+    <span class="concept-number">02</span>
+    <span class="concept-title">The Sunrise — Your score lifts the sun</span>
+  </div>
+  <p class="concept-desc">Directly ties to the light therapy metaphor. Higher scores = the sun rises higher, the sky gets brighter. Low scores are dawn, not darkness — "the sun is about to rise." Ambient, beautiful, never punitive.</p>
+
+  <div class="concept-frames">
+    <div class="frame-wrapper">
+      <span class="frame-label">High · 88%</span>
+      <div class="frame">
+        <div class="sunrise-score">
+          <div class="sunrise-sky high">
+            <div class="sunrise-sun"></div>
+            <div class="sunrise-horizon"></div>
+          </div>
+          <div class="sunrise-content">
+            <p class="sunrise-top-label">Today's Session</p>
+            <p class="sunrise-main-score">88</p>
+            <p class="sunrise-subtitle">Bright and clear</p>
+            <div class="sunrise-bottom">Your light is shining strong today. That's 5 bright days in a row!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="frame-wrapper">
+      <span class="frame-label">Medium · 65%</span>
+      <div class="frame">
+        <div class="sunrise-score">
+          <div class="sunrise-sky mid">
+            <div class="sunrise-sun"></div>
+            <div class="sunrise-horizon"></div>
+          </div>
+          <div class="sunrise-content">
+            <p class="sunrise-top-label">Today's Session</p>
+            <p class="sunrise-main-score">65</p>
+            <p class="sunrise-subtitle">The sun is climbing</p>
+            <div class="sunrise-bottom">You showed up today — that matters. Tomorrow's sunrise is already brighter.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="frame-wrapper">
+      <span class="frame-label">Low · 35%</span>
+      <div class="frame">
+        <div class="sunrise-score">
+          <div class="sunrise-sky low">
+            <div class="sunrise-sun"></div>
+            <div class="sunrise-horizon"></div>
+          </div>
+          <div class="sunrise-content">
+            <p class="sunrise-top-label">Today's Session</p>
+            <p class="sunrise-main-score">35</p>
+            <p class="sunrise-subtitle">Dawn is breaking</p>
+            <div class="sunrise-bottom">Every sunrise starts at the horizon. You've taken the first step — the sky will brighten from here.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- =============== CONCEPT 3: THE PATH =============== -->
+<div class="concept">
+  <div class="concept-header">
+    <span class="concept-number">03</span>
+    <span class="concept-title">The Path — Walking toward a destination</span>
+  </div>
+  <p class="concept-desc">Score as distance traveled on a path with milestones. You can see where you've been and where you're going. Milestones celebrate specific achievements. From Hooked: the endowed progress effect — seeing how far you've come keeps you going.</p>
+
+  <div class="concept-frames">
+    <div class="frame-wrapper">
+      <span class="frame-label">High · 85%</span>
+      <div class="frame">
+        <div class="path-score">
+          <p class="path-label">Your Journey</p>
+          <div class="path-visual">
+            <div class="path-track"></div>
+            <div class="path-filled high"></div>
+
+            <div class="path-milestone" style="bottom:0%">
+              <div class="milestone-dot done">✓</div>
+              <span class="milestone-text">First session</span>
+            </div>
+            <div class="path-milestone" style="bottom:25%">
+              <div class="milestone-dot done">✓</div>
+              <span class="milestone-text">3-day streak</span>
+            </div>
+            <div class="path-milestone" style="bottom:50%">
+              <div class="milestone-dot done">✓</div>
+              <span class="milestone-text">Halfway there</span>
+            </div>
+            <div class="path-milestone" style="bottom:75%">
+              <div class="milestone-dot current">→</div>
+              <span class="milestone-text" style="font-weight:700;color:var(--terracotta)">Almost there!</span>
+            </div>
+            <div class="path-milestone" style="bottom:95%">
+              <div class="milestone-dot upcoming">🏁</div>
+              <span class="milestone-text faded">Treatment complete</span>
+            </div>
+
+            <div class="path-walker" style="bottom:78%">🚶</div>
+          </div>
+          <div class="path-message">You're <strong>so close</strong>! Just 2 more sessions to the finish line.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="frame-wrapper">
+      <span class="frame-label">Medium · 55%</span>
+      <div class="frame">
+        <div class="path-score">
+          <p class="path-label">Your Journey</p>
+          <div class="path-visual">
+            <div class="path-track"></div>
+            <div class="path-filled mid"></div>
+
+            <div class="path-milestone" style="bottom:0%">
+              <div class="milestone-dot done">✓</div>
+              <span class="milestone-text">First session</span>
+            </div>
+            <div class="path-milestone" style="bottom:25%">
+              <div class="milestone-dot done">✓</div>
+              <span class="milestone-text">3-day streak</span>
+            </div>
+            <div class="path-milestone" style="bottom:50%">
+              <div class="milestone-dot current">→</div>
+              <span class="milestone-text" style="font-weight:700;color:var(--terracotta)">Halfway point</span>
+            </div>
+            <div class="path-milestone" style="bottom:75%">
+              <div class="milestone-dot upcoming">⭐</div>
+              <span class="milestone-text faded">Week 2 start</span>
+            </div>
+            <div class="path-milestone" style="bottom:95%">
+              <div class="milestone-dot upcoming">🏁</div>
+              <span class="milestone-text faded">Treatment complete</span>
+            </div>
+
+            <div class="path-walker" style="bottom:48%">🚶</div>
+          </div>
+          <div class="path-message">You've reached the <strong>halfway mark</strong>! The next milestone is just 3 sessions away.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="frame-wrapper">
+      <span class="frame-label">Low · 20%</span>
+      <div class="frame">
+        <div class="path-score">
+          <p class="path-label">Your Journey</p>
+          <div class="path-visual">
+            <div class="path-track"></div>
+            <div class="path-filled low"></div>
+
+            <div class="path-milestone" style="bottom:0%">
+              <div class="milestone-dot done">✓</div>
+              <span class="milestone-text">First session</span>
+            </div>
+            <div class="path-milestone" style="bottom:25%">
+              <div class="milestone-dot current">→</div>
+              <span class="milestone-text" style="font-weight:700;color:var(--terracotta)">3-day streak</span>
+            </div>
+            <div class="path-milestone" style="bottom:50%">
+              <div class="milestone-dot upcoming">⭐</div>
+              <span class="milestone-text faded">Halfway there</span>
+            </div>
+            <div class="path-milestone" style="bottom:75%">
+              <div class="milestone-dot upcoming">⭐</div>
+              <span class="milestone-text faded">Week 2</span>
+            </div>
+            <div class="path-milestone" style="bottom:95%">
+              <div class="milestone-dot upcoming">🏁</div>
+              <span class="milestone-text faded">Treatment complete</span>
+            </div>
+
+            <div class="path-walker" style="bottom:16%">🚶</div>
+          </div>
+          <div class="path-message">You've started the journey! <strong>2 more sessions</strong> and you'll hit your first streak.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- =============== CONCEPT 4: THE STREAK FLAME =============== -->
+<div class="concept">
+  <div class="concept-header">
+    <span class="concept-number">04</span>
+    <span class="concept-title">The Streak Flame — Momentum you don't want to lose</span>
+  </div>
+  <p class="concept-desc">Inspired by Duolingo's streak. The flame grows bigger and brighter with consecutive sessions. Missing a day dims it but doesn't kill it (from SuperBetter: resilience, not perfection). The loss aversion drives return visits — Hooked's variable reward meets investment.</p>
+
+  <div class="concept-frames">
+    <div class="frame-wrapper">
+      <span class="frame-label">High · 9-day streak</span>
+      <div class="frame">
+        <div class="flame-score">
+          <p class="flame-label">Your Streak</p>
+          <div class="flame-glow hot"></div>
+          <div class="flame-container">
+            <div class="flame-emoji">🔥</div>
+            <p class="flame-number">9</p>
+            <p class="flame-unit hot">days blazing</p>
+            <div class="flame-streak-bar">
+              <div class="streak-pip lit"></div>
+              <div class="streak-pip lit"></div>
+              <div class="streak-pip lit"></div>
+              <div class="streak-pip lit"></div>
+              <div class="streak-pip lit"></div>
+              <div class="streak-pip lit"></div>
+              <div class="streak-pip lit"></div>
+              <div class="streak-pip lit"></div>
+              <div class="streak-pip lit"></div>
+              <div class="streak-pip unlit"></div>
+            </div>
+          </div>
+          <div class="flame-message hot">Your flame is <strong>roaring</strong>! One more day and you hit double digits.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="frame-wrapper">
+      <span class="frame-label">Medium · 4-day streak</span>
+      <div class="frame">
+        <div class="flame-score">
+          <p class="flame-label">Your Streak</p>
+          <div class="flame-glow warm"></div>
+          <div class="flame-container">
+            <div class="flame-emoji small">🔥</div>
+            <p class="flame-number">4</p>
+            <p class="flame-unit warm">days burning</p>
+            <div class="flame-streak-bar">
+              <div class="streak-pip lit"></div>
+              <div class="streak-pip lit"></div>
+              <div class="streak-pip lit"></div>
+              <div class="streak-pip lit"></div>
+              <div class="streak-pip unlit"></div>
+              <div class="streak-pip unlit"></div>
+              <div class="streak-pip unlit"></div>
+              <div class="streak-pip unlit"></div>
+              <div class="streak-pip unlit"></div>
+              <div class="streak-pip unlit"></div>
+            </div>
+          </div>
+          <div class="flame-message warm">Your flame is <strong>growing</strong>. Don't let it cool down — tomorrow is day 5!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="frame-wrapper">
+      <span class="frame-label">Low · 1-day streak</span>
+      <div class="frame">
+        <div class="flame-score">
+          <p class="flame-label">Your Streak</p>
+          <div class="flame-glow cool"></div>
+          <div class="flame-container">
+            <div class="flame-emoji tiny">🕯️</div>
+            <p class="flame-number dim">1</p>
+            <p class="flame-unit cool">day · a spark</p>
+            <div class="flame-streak-bar">
+              <div class="streak-pip lit"></div>
+              <div class="streak-pip unlit"></div>
+              <div class="streak-pip unlit"></div>
+              <div class="streak-pip unlit"></div>
+              <div class="streak-pip unlit"></div>
+              <div class="streak-pip unlit"></div>
+              <div class="streak-pip unlit"></div>
+              <div class="streak-pip unlit"></div>
+              <div class="streak-pip unlit"></div>
+              <div class="streak-pip unlit"></div>
+            </div>
+          </div>
+          <div class="flame-message cool">Every fire starts with <strong>a single spark</strong>. Come back tomorrow to feed the flame.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- =============== CONCEPT 5: THE RING =============== -->
+<div class="concept">
+  <div class="concept-header">
+    <span class="concept-number">05</span>
+    <span class="concept-title">The Ring — Close your ring today</span>
+  </div>
+  <p class="concept-desc">Apple Watch energy. Multiple concentric rings for different quality dimensions (time, positioning, consistency). The satisfaction of closing a ring is a powerful daily micro-reward. Simple, clean, action-oriented.</p>
+
+  <div class="concept-frames">
+    <div class="frame-wrapper">
+      <span class="frame-label">High · All rings closed</span>
+      <div class="frame">
+        <div class="ring-score">
+          <p class="ring-label">Today's Rings</p>
+          <div class="ring-visual">
+            <svg viewBox="0 0 180 180">
+              <!-- Outer ring: Duration -->
+              <circle cx="90" cy="90" r="82" fill="none" stroke="#EDE6DF" stroke-width="10"/>
+              <circle cx="90" cy="90" r="82" fill="none" stroke="#7BA577" stroke-width="10"
+                stroke-dasharray="515" stroke-dashoffset="51.5" stroke-linecap="round"
+                transform="rotate(-90 90 90)"/>
+              <!-- Middle ring: Positioning -->
+              <circle cx="90" cy="90" r="66" fill="none" stroke="#EDE6DF" stroke-width="10"/>
+              <circle cx="90" cy="90" r="66" fill="none" stroke="#D4A853" stroke-width="10"
+                stroke-dasharray="415" stroke-dashoffset="41.5" stroke-linecap="round"
+                transform="rotate(-90 90 90)"/>
+              <!-- Inner ring: Consistency -->
+              <circle cx="90" cy="90" r="50" fill="none" stroke="#EDE6DF" stroke-width="10"/>
+              <circle cx="90" cy="90" r="50" fill="none" stroke="#C4724E" stroke-width="10"
+                stroke-dasharray="314" stroke-dashoffset="31.4" stroke-linecap="round"
+                transform="rotate(-90 90 90)"/>
+            </svg>
+            <div class="ring-center">
+              <span class="emoji">🎉</span>
+              <span class="score">90</span>
+              <span class="out-of">all rings closed!</span>
+            </div>
+          </div>
+          <div class="ring-breakdown">
+            <div class="ring-metric"><span class="icon">⏱</span><span class="val" style="color:var(--sage)">30/30</span><span class="name">Duration</span></div>
+            <div class="ring-metric"><span class="icon">📐</span><span class="val" style="color:var(--gold)">92%</span><span class="name">Position</span></div>
+            <div class="ring-metric"><span class="icon">🔄</span><span class="val" style="color:var(--terracotta)">5 days</span><span class="name">Streak</span></div>
+          </div>
+          <div class="ring-message">All three rings <strong>closed</strong>! You nailed duration, positioning, and consistency today.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="frame-wrapper">
+      <span class="frame-label">Medium · 2 of 3 closed</span>
+      <div class="frame">
+        <div class="ring-score">
+          <p class="ring-label">Today's Rings</p>
+          <div class="ring-visual">
+            <svg viewBox="0 0 180 180">
+              <circle cx="90" cy="90" r="82" fill="none" stroke="#EDE6DF" stroke-width="10"/>
+              <circle cx="90" cy="90" r="82" fill="none" stroke="#7BA577" stroke-width="10"
+                stroke-dasharray="515" stroke-dashoffset="103" stroke-linecap="round"
+                transform="rotate(-90 90 90)"/>
+              <circle cx="90" cy="90" r="66" fill="none" stroke="#EDE6DF" stroke-width="10"/>
+              <circle cx="90" cy="90" r="66" fill="none" stroke="#D4A853" stroke-width="10"
+                stroke-dasharray="415" stroke-dashoffset="41.5" stroke-linecap="round"
+                transform="rotate(-90 90 90)"/>
+              <circle cx="90" cy="90" r="50" fill="none" stroke="#EDE6DF" stroke-width="10"/>
+              <circle cx="90" cy="90" r="50" fill="none" stroke="#C4724E" stroke-width="10"
+                stroke-dasharray="314" stroke-dashoffset="157" stroke-linecap="round"
+                transform="rotate(-90 90 90)"/>
+            </svg>
+            <div class="ring-center">
+              <span class="emoji">💪</span>
+              <span class="score">68</span>
+              <span class="out-of">almost there</span>
+            </div>
+          </div>
+          <div class="ring-breakdown">
+            <div class="ring-metric"><span class="icon">⏱</span><span class="val" style="color:var(--sage)">24/30</span><span class="name">Duration</span></div>
+            <div class="ring-metric"><span class="icon">📐</span><span class="val" style="color:var(--gold)">90%</span><span class="name">Position</span></div>
+            <div class="ring-metric"><span class="icon">🔄</span><span class="val" style="color:var(--terracotta)">2 days</span><span class="name">Streak</span></div>
+          </div>
+          <div class="ring-message"><strong>6 more minutes</strong> would have closed your duration ring! Try staying a bit longer tomorrow.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="frame-wrapper">
+      <span class="frame-label">Low · Starting out</span>
+      <div class="frame">
+        <div class="ring-score">
+          <p class="ring-label">Today's Rings</p>
+          <div class="ring-visual">
+            <svg viewBox="0 0 180 180">
+              <circle cx="90" cy="90" r="82" fill="none" stroke="#EDE6DF" stroke-width="10"/>
+              <circle cx="90" cy="90" r="82" fill="none" stroke="#7BA577" stroke-width="10"
+                stroke-dasharray="515" stroke-dashoffset="360" stroke-linecap="round"
+                transform="rotate(-90 90 90)"/>
+              <circle cx="90" cy="90" r="66" fill="none" stroke="#EDE6DF" stroke-width="10"/>
+              <circle cx="90" cy="90" r="66" fill="none" stroke="#D4A853" stroke-width="10"
+                stroke-dasharray="415" stroke-dashoffset="290" stroke-linecap="round"
+                transform="rotate(-90 90 90)"/>
+              <circle cx="90" cy="90" r="50" fill="none" stroke="#EDE6DF" stroke-width="10"/>
+              <circle cx="90" cy="90" r="50" fill="none" stroke="#C4724E" stroke-width="10"
+                stroke-dasharray="314" stroke-dashoffset="283" stroke-linecap="round"
+                transform="rotate(-90 90 90)"/>
+            </svg>
+            <div class="ring-center">
+              <span class="emoji">🌱</span>
+              <span class="score">28</span>
+              <span class="out-of">just starting</span>
+            </div>
+          </div>
+          <div class="ring-breakdown">
+            <div class="ring-metric"><span class="icon">⏱</span><span class="val" style="color:var(--sage)">9/30</span><span class="name">Duration</span></div>
+            <div class="ring-metric"><span class="icon">📐</span><span class="val" style="color:var(--gold)">42%</span><span class="name">Position</span></div>
+            <div class="ring-metric"><span class="icon">🔄</span><span class="val" style="color:var(--terracotta)">1 day</span><span class="name">Streak</span></div>
+          </div>
+          <div class="ring-message">Your rings are <strong>open and waiting</strong>. Every minute of your next session fills them up.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- =============== CONCEPT 6: THE WEATHER =============== -->
+<div class="concept">
+  <div class="concept-header">
+    <span class="concept-number">06</span>
+    <span class="concept-title">The Weather — Today's treatment forecast</span>
+  </div>
+  <p class="concept-desc">Score expressed as a weather metaphor — ties directly to light therapy. Sunny = great session, partly cloudy = decent, overcast = needs improvement. Includes a "forecast" showing recent days. No weather is bad weather — even cloudy days have light. Gentle, familiar, non-numerical for patients who find scores stressful.</p>
+
+  <div class="concept-frames">
+    <div class="frame-wrapper">
+      <span class="frame-label">High · Sunny</span>
+      <div class="frame">
+        <div class="weather-score">
+          <div class="weather-bg sunny"></div>
+          <div class="weather-content">
+            <p class="weather-label">Today's Light Report</p>
+            <div class="weather-main">
+              <span class="weather-icon">☀️</span>
+              <span class="weather-temp">88°</span>
+            </div>
+            <p class="weather-condition">Bright and clear — excellent session</p>
+
+            <div class="weather-forecast">
+              <div class="forecast-day"><p class="day">Mon</p><span class="icon">☀️</span><p class="score">90°</p></div>
+              <div class="forecast-day"><p class="day">Tue</p><span class="icon">☀️</span><p class="score">85°</p></div>
+              <div class="forecast-day"><p class="day">Wed</p><span class="icon">⛅</span><p class="score">65°</p></div>
+              <div class="forecast-day"><p class="day">Thu</p><span class="icon">☀️</span><p class="score">88°</p></div>
+              <div class="forecast-day"><p class="day">Fri</p><span class="icon">❓</span><p class="score">—</p></div>
+            </div>
+
+            <div class="sunrise-bottom" style="background:rgba(255,255,255,0.5);color:#3D2E2A;border-radius:16px;padding:14px 18px;font-size:13px;line-height:1.5;">Sunny skies all week! Your forecast is looking beautiful.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="frame-wrapper">
+      <span class="frame-label">Medium · Partly cloudy</span>
+      <div class="frame">
+        <div class="weather-score">
+          <div class="weather-bg partly"></div>
+          <div class="weather-content">
+            <p class="weather-label">Today's Light Report</p>
+            <div class="weather-main">
+              <span class="weather-icon">⛅</span>
+              <span class="weather-temp">62°</span>
+            </div>
+            <p class="weather-condition">Partly cloudy — the sun peeked through</p>
+
+            <div class="weather-forecast">
+              <div class="forecast-day"><p class="day">Mon</p><span class="icon">☀️</span><p class="score">82°</p></div>
+              <div class="forecast-day"><p class="day">Tue</p><span class="icon">⛅</span><p class="score">60°</p></div>
+              <div class="forecast-day"><p class="day">Wed</p><span class="icon">⛅</span><p class="score">62°</p></div>
+              <div class="forecast-day"><p class="day">Thu</p><span class="icon">❓</span><p class="score">—</p></div>
+            </div>
+
+            <div class="sunrise-bottom" style="background:rgba(255,255,255,0.35);color:#4A3F38;border-radius:16px;padding:14px 18px;font-size:13px;line-height:1.5;">A few more minutes next session could clear those clouds right up.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="frame-wrapper">
+      <span class="frame-label">Low · Overcast</span>
+      <div class="frame">
+        <div class="weather-score">
+          <div class="weather-bg cloudy"></div>
+          <div class="weather-content">
+            <p class="weather-label">Today's Light Report</p>
+            <div class="weather-main">
+              <span class="weather-icon">🌥️</span>
+              <span class="weather-temp">35°</span>
+            </div>
+            <p class="weather-condition">Overcast — but the sun is still there</p>
+
+            <div class="weather-forecast">
+              <div class="forecast-day"><p class="day">Mon</p><span class="icon">🌥️</span><p class="score">35°</p></div>
+              <div class="forecast-day"><p class="day">Tue</p><span class="icon">❓</span><p class="score">—</p></div>
+            </div>
+
+            <div class="sunrise-bottom" style="background:rgba(255,255,255,0.25);color:#5A504A;border-radius:16px;padding:14px 18px;font-size:13px;line-height:1.5;">Even on cloudy days, the sun is always above the clouds. Tomorrow's forecast is wide open.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="height:40px"></div>
+</body>
+</html>

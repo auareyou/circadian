@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Circadian — Concept 1: The Coach</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --warm-cream: #FBF6F0;
+    --terracotta: #C4724E;
+    --terracotta-light: #E8A882;
+    --sage: #8BA888;
+    --sage-light: #B8D4B5;
+    --deep-brown: #3D2E2A;
+    --soft-gold: #D4A853;
+    --muted-rose: #C99B8E;
+    --light-sage: #E8F0E6;
+    --card-bg: #FFFFFF;
+    --text-primary: #2C2320;
+    --text-secondary: #7A6B63;
+    --text-muted: #A89B93;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #1a1a1a;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 20px;
+    gap: 20px;
+  }
+
+  .concept-label {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: var(--terracotta);
+    color: white;
+    text-align: center;
+    padding: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    z-index: 1000;
+  }
+
+  .screen-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-top: 50px;
+  }
+
+  .screen-label {
+    color: #999;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .ipad-frame {
+    width: 512px;
+    height: 683px;
+    border-radius: 24px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+
+  /* ===================== DASHBOARD ===================== */
+  .dashboard {
+    width: 100%;
+    height: 100%;
+    background: var(--warm-cream);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .dash-header {
+    padding: 24px 28px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .greeting-area h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: var(--text-primary);
+    font-weight: 400;
+  }
+
+  .greeting-area .subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+  }
+
+  .streak-badge {
+    background: linear-gradient(135deg, var(--soft-gold), #E8C56A);
+    color: var(--deep-brown);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  /* Coach Card */
+  .coach-card {
+    margin: 20px 28px 0;
+    background: linear-gradient(135deg, var(--terracotta), #B5634A);
+    border-radius: 20px;
+    padding: 22px 24px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .coach-card::after {
+    content: '';
+    position: absolute;
+    right: -20px;
+    top: -20px;
+    width: 120px;
+    height: 120px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
+
+  .coach-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin-bottom: 12px;
+    border: 2px solid rgba(255,255,255,0.3);
+  }
+
+  .coach-message {
+    font-size: 16px;
+    line-height: 1.5;
+    font-weight: 400;
+    max-width: 340px;
+  }
+
+  .coach-message strong {
+    font-weight: 600;
+  }
+
+  .coach-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .coach-btn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+  }
+
+  .coach-btn.primary {
+    background: white;
+    color: var(--terracotta);
+  }
+
+  .coach-btn.secondary {
+    background: rgba(255,255,255,0.15);
+    color: white;
+  }
+
+  /* Session Card */
+  .session-card {
+    margin: 16px 28px 0;
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 20px 22px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+
+  .session-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+
+  .session-header h3 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+
+  .session-time-label {
+    font-size: 12px;
+    color: var(--sage);
+    font-weight: 500;
+  }
+
+  .session-timer {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .timer-ring {
+    width: 64px;
+    height: 64px;
+    position: relative;
+  }
+
+  .timer-ring svg {
+    transform: rotate(-90deg);
+  }
+
+  .timer-ring .time-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .session-info {
+    flex: 1;
+  }
+
+  .session-info .label {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .session-info .value {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-top: 2px;
+  }
+
+  .start-session-btn {
+    width: 100%;
+    margin-top: 14px;
+    padding: 14px;
+    border-radius: 14px;
+    background: var(--sage);
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+  }
+
+  /* Progress Section */
+  .progress-section {
+    margin: 16px 28px 0;
+    display: flex;
+    gap: 12px;
+  }
+
+  .progress-card {
+    flex: 1;
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+
+  .progress-card .label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+  }
+
+  .progress-card .value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: var(--text-primary);
+    margin-top: 4px;
+  }
+
+  .progress-card .detail {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+  }
+
+  .week-dots {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .week-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #E8E0D8;
+  }
+
+  .week-dot.done { background: var(--sage); }
+  .week-dot.today { background: var(--terracotta); box-shadow: 0 0 0 3px rgba(196,114,78,0.2); }
+
+  /* Bottom Nav */
+  .bottom-nav {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 28px 20px;
+    border-top: 1px solid #EDE6DF;
+  }
+
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .nav-item.active { color: var(--terracotta); }
+
+  .nav-icon {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  /* ===================== LIGHT SCREEN ===================== */
+  .light-screen {
+    width: 100%;
+    height: 100%;
+    background: #FFFEF9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .light-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(255,252,240,1) 0%, rgba(255,248,230,0.8) 40%, rgba(251,246,240,0.4) 70%);
+  }
+
+  .light-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .coach-bubble-light {
+    background: white;
+    border-radius: 20px;
+    padding: 16px 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    max-width: 320px;
+    margin-bottom: 40px;
+    position: relative;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .coach-bubble-light::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 4px;
+    transform: translateX(-50%) rotate(45deg);
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.03);
+  }
+
+  .coach-bubble-light .avatar-small {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--terracotta);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+
+  .coach-bubble-light p {
+    font-size: 15px;
+    color: var(--text-primary);
+    line-height: 1.5;
+  }
+
+  .light-timer-large {
+    font-family: 'DM Serif Display', serif;
+    font-size: 72px;
+    color: var(--terracotta);
+    opacity: 0.7;
+    margin-bottom: 8px;
+  }
+
+  .light-timer-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+  }
+
+  .light-progress-bar {
+    width: 260px;
+    height: 4px;
+    background: rgba(0,0,0,0.05);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .light-progress-fill {
+    width: 35%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--terracotta-light), var(--terracotta));
+    border-radius: 2px;
+  }
+
+  .light-bottom-controls {
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    z-index: 2;
+  }
+
+  .light-ctrl-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  /* Motivation strip */
+  .motivation-strip {
+    position: absolute;
+    top: 50px;
+    right: 24px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-end;
+  }
+
+  .motivation-chip {
+    background: white;
+    padding: 8px 14px;
+    border-radius: 12px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .motivation-chip .emoji { font-size: 14px; }
+
+  /* ===================== ONBOARDING ===================== */
+  .onboarding {
+    width: 100%;
+    height: 100%;
+    background: var(--warm-cream);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    position: relative;
+  }
+
+  .onboarding-illustration {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--terracotta-light), var(--muted-rose));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .onboarding-illustration::after {
+    content: '';
+    position: absolute;
+    inset: -12px;
+    border-radius: 50%;
+    border: 2px dashed var(--terracotta-light);
+    opacity: 0.4;
+  }
+
+  .onboarding h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    color: var(--text-primary);
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .onboarding p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    text-align: center;
+    line-height: 1.6;
+    max-width: 340px;
+    margin-bottom: 32px;
+  }
+
+  .onboarding-coach-intro {
+    background: white;
+    border-radius: 20px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+    margin-bottom: 24px;
+    max-width: 380px;
+    width: 100%;
+  }
+
+  .onboarding-coach-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--terracotta), #B5634A);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    flex-shrink: 0;
+  }
+
+  .onboarding-coach-text .name {
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text-primary);
+  }
+
+  .onboarding-coach-text .role {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .onboarding-cta {
+    padding: 16px 48px;
+    border-radius: 16px;
+    background: var(--terracotta);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+  }
+
+  .onboarding-dots {
+    position: absolute;
+    bottom: 32px;
+    display: flex;
+    gap: 8px;
+  }
+
+  .onboarding-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #D8CFC7;
+  }
+
+  .onboarding-dot.active {
+    background: var(--terracotta);
+    width: 24px;
+    border-radius: 4px;
+  }
+
+  /* Step indicator */
+  .step-indicator {
+    position: absolute;
+    top: 28px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .step-bar {
+    width: 48px;
+    height: 3px;
+    border-radius: 2px;
+    background: #E0D8D0;
+  }
+
+  .step-bar.done { background: var(--terracotta); }
+  .step-bar.current { background: var(--terracotta); opacity: 0.5; }
+</style>
+</head>
+<body>
+  <div class="concept-label">CONCEPT 1 — THE COACH · Personal · Encouraging · Bidirectional</div>
+
+  <!-- DASHBOARD -->
+  <div class="screen-group">
+    <span class="screen-label">Dashboard</span>
+    <div class="ipad-frame">
+      <div class="dashboard">
+        <div class="dash-header">
+          <div class="greeting-area">
+            <h1>Good morning, John</h1>
+            <p class="subtitle">Day 5 of your light therapy journey</p>
+          </div>
+          <div class="streak-badge">🔥 5 days</div>
+        </div>
+
+        <!-- Coach Card -->
+        <div class="coach-card">
+          <div class="coach-avatar">🌤️</div>
+          <p class="coach-message">
+            Great consistency this week! Your <strong>morning sessions</strong> seem to work best for you. Ready for today's session?
+          </p>
+          <div class="coach-actions">
+            <button class="coach-btn primary">Start session</button>
+            <button class="coach-btn secondary">Remind me later</button>
+          </div>
+        </div>
+
+        <!-- Today's Session -->
+        <div class="session-card">
+          <div class="session-header">
+            <h3>Today's Session</h3>
+            <span class="session-time-label">Best time: 8–10 AM</span>
+          </div>
+          <div class="session-timer">
+            <div class="timer-ring">
+              <svg width="64" height="64" viewBox="0 0 64 64">
+                <circle cx="32" cy="32" r="28" fill="none" stroke="#EDE6DF" stroke-width="4"/>
+                <circle cx="32" cy="32" r="28" fill="none" stroke="#8BA888" stroke-width="4" stroke-dasharray="176" stroke-dashoffset="176" stroke-linecap="round"/>
+              </svg>
+              <span class="time-text">30:00</span>
+            </div>
+            <div class="session-info">
+              <p class="label">Duration</p>
+              <p class="value">30 minutes · White light</p>
+            </div>
+          </div>
+          <button class="start-session-btn">Begin Session →</button>
+        </div>
+
+        <!-- Progress -->
+        <div class="progress-section">
+          <div class="progress-card">
+            <p class="label">This week</p>
+            <p class="value">5/7</p>
+            <p class="detail">sessions completed</p>
+            <div class="week-dots">
+              <div class="week-dot done"></div>
+              <div class="week-dot done"></div>
+              <div class="week-dot done"></div>
+              <div class="week-dot done"></div>
+              <div class="week-dot done"></div>
+              <div class="week-dot today"></div>
+              <div class="week-dot"></div>
+            </div>
+          </div>
+          <div class="progress-card">
+            <p class="label">Treatment</p>
+            <p class="value">36%</p>
+            <p class="detail">5 of 14 days</p>
+            <div style="margin-top:10px;height:6px;background:#EDE6DF;border-radius:3px;overflow:hidden">
+              <div style="width:36%;height:100%;background:linear-gradient(90deg,#8BA888,#6E9A6B);border-radius:3px"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Nav -->
+        <div class="bottom-nav">
+          <div class="nav-item active">
+            <div class="nav-icon">☀️</div>
+            Home
+          </div>
+          <div class="nav-item">
+            <div class="nav-icon">📊</div>
+            Progress
+          </div>
+          <div class="nav-item">
+            <div class="nav-icon">📺</div>
+            Content
+          </div>
+          <div class="nav-item">
+            <div class="nav-icon">⚙️</div>
+            Settings
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIGHT THERAPY SCREEN -->
+  <div class="screen-group">
+    <span class="screen-label">Light Therapy Session</span>
+    <div class="ipad-frame">
+      <div class="light-screen">
+        <div class="light-glow"></div>
+
+        <div class="motivation-strip">
+          <div class="motivation-chip">
+            <span class="emoji">🎯</span> 5-day streak!
+          </div>
+          <div class="motivation-chip">
+            <span class="emoji">💪</span> 65% of session done
+          </div>
+        </div>
+
+        <div class="light-content">
+          <div class="coach-bubble-light">
+            <div class="avatar-small">🌤️</div>
+            <p>You're doing great, John. Just 10 more minutes. Did you know morning light can boost your energy for hours?</p>
+          </div>
+
+          <div class="light-timer-large">19:32</div>
+          <p class="light-timer-sub">minutes remaining</p>
+          <div class="light-progress-bar">
+            <div class="light-progress-fill"></div>
+          </div>
+        </div>
+
+        <div class="light-bottom-controls">
+          <button class="light-ctrl-btn">⏸</button>
+          <button class="light-ctrl-btn">📺</button>
+          <button class="light-ctrl-btn">🔊</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ONBOARDING -->
+  <div class="screen-group">
+    <span class="screen-label">Onboarding</span>
+    <div class="ipad-frame">
+      <div class="onboarding">
+        <div class="step-indicator">
+          <div class="step-bar done"></div>
+          <div class="step-bar done"></div>
+          <div class="step-bar current"></div>
+          <div class="step-bar"></div>
+          <div class="step-bar"></div>
+        </div>
+
+        <div class="onboarding-illustration">🌅</div>
+
+        <h2>Meet your light coach</h2>
+        <p>I'll be here every day to guide your therapy, share tips, and celebrate your progress. Think of me as your daily check-in partner.</p>
+
+        <div class="onboarding-coach-intro">
+          <div class="onboarding-coach-avatar">🌤️</div>
+          <div class="onboarding-coach-text">
+            <p class="name">Your Light Coach</p>
+            <p class="role">Personalized guidance · Daily check-ins · Progress insights</p>
+          </div>
+        </div>
+
+        <button class="onboarding-cta">Nice to meet you →</button>
+
+        <div class="onboarding-dots">
+          <div class="onboarding-dot"></div>
+          <div class="onboarding-dot"></div>
+          <div class="onboarding-dot active"></div>
+          <div class="onboarding-dot"></div>
+          <div class="onboarding-dot"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

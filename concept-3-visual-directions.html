@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Circadian — Concept 3: Visual Directions</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Serif+Display&family=Playfair+Display:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #111;
+    padding: 20px;
+    min-height: 100vh;
+  }
+
+  .concept-label {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #3D2E2A;
+    color: #D4A853;
+    text-align: center;
+    padding: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    z-index: 1000;
+  }
+
+  .direction-row {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 50px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+
+  .direction-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .direction-label {
+    color: #ccc;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-align: center;
+  }
+
+  .direction-sublabel {
+    color: #888;
+    font-size: 11px;
+    max-width: 340px;
+    text-align: center;
+    line-height: 1.5;
+    margin-top: -6px;
+  }
+
+  .ipad-frame {
+    width: 440px;
+    height: 586px;
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+  }
+
+  /* ======== DIRECTION A: Earthy Warmth ======== */
+  .dir-a {
+    width: 100%;
+    height: 100%;
+    background: #FAF5EE;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .dir-a .header {
+    padding: 22px 24px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .dir-a .header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 24px;
+    color: #3D2E2A;
+  }
+
+  .dir-a .header .sub {
+    font-size: 13px;
+    color: #A08B7A;
+    margin-top: 2px;
+  }
+
+  .dir-a .badge {
+    background: linear-gradient(135deg, #C4724E, #B5634A);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 16px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .dir-a .main-card {
+    margin: 16px 24px 0;
+    background: white;
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+
+  .dir-a .card-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #A08B7A;
+    margin-bottom: 10px;
+  }
+
+  .dir-a .timer-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 14px;
+  }
+
+  .dir-a .timer-circle {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #FAF5EE;
+    border: 3px solid #8BA888;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: #3D2E2A;
+  }
+
+  .dir-a .timer-info .primary { font-size: 15px; font-weight: 500; color: #3D2E2A; }
+  .dir-a .timer-info .secondary { font-size: 12px; color: #A08B7A; margin-top: 2px; }
+
+  .dir-a .cta {
+    width: 100%;
+    padding: 13px;
+    border-radius: 14px;
+    background: #8BA888;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+  }
+
+  .dir-a .content-row {
+    margin: 14px 24px 0;
+    display: flex;
+    gap: 10px;
+  }
+
+  .dir-a .content-tile {
+    flex: 1;
+    background: white;
+    border-radius: 14px;
+    padding: 16px 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    text-align: center;
+  }
+
+  .dir-a .content-tile .icon { font-size: 28px; margin-bottom: 6px; display: block; }
+  .dir-a .content-tile .name { font-size: 12px; font-weight: 600; color: #3D2E2A; }
+  .dir-a .content-tile .meta { font-size: 10px; color: #A08B7A; margin-top: 2px; }
+
+  .dir-a .progress-row {
+    margin: 14px 24px 0;
+    display: flex;
+    gap: 10px;
+  }
+
+  .dir-a .progress-tile {
+    flex: 1;
+    background: white;
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  }
+
+  .dir-a .progress-tile .label { font-size: 10px; color: #A08B7A; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .dir-a .progress-tile .val { font-family: 'DM Serif Display', serif; font-size: 24px; color: #3D2E2A; margin-top: 2px; }
+  .dir-a .progress-tile .detail { font-size: 11px; color: #B8A899; margin-top: 2px; }
+
+  .dir-a .dot-row { display: flex; gap: 5px; margin-top: 8px; }
+  .dir-a .dot { width: 8px; height: 8px; border-radius: 50%; background: #E8DFD4; }
+  .dir-a .dot.done { background: #8BA888; }
+  .dir-a .dot.now { background: #C4724E; }
+
+  .dir-a .bottom-nav {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 24px 16px;
+    border-top: 1px solid #EDE6DF;
+  }
+
+  .dir-a .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-size: 9px;
+    color: #B8A899;
+    font-weight: 500;
+  }
+
+  .dir-a .nav-item.active { color: #C4724E; }
+
+  /* ======== DIRECTION B: Soft Clinical ======== */
+  .dir-b {
+    width: 100%;
+    height: 100%;
+    background: #F4F7FB;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .dir-b .header {
+    padding: 22px 24px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .dir-b .header h1 {
+    font-family: 'Inter', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #1E293B;
+  }
+
+  .dir-b .header .sub { font-size: 13px; color: #94A3B8; margin-top: 2px; }
+
+  .dir-b .badge {
+    background: #3B82F6;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 16px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .dir-b .main-card {
+    margin: 16px 24px 0;
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    border: 1px solid #E2E8F0;
+  }
+
+  .dir-b .card-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #94A3B8;
+    margin-bottom: 10px;
+  }
+
+  .dir-b .timer-row { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
+
+  .dir-b .timer-circle {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #EFF6FF;
+    border: 3px solid #3B82F6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1E293B;
+  }
+
+  .dir-b .timer-info .primary { font-size: 15px; font-weight: 500; color: #1E293B; }
+  .dir-b .timer-info .secondary { font-size: 12px; color: #94A3B8; margin-top: 2px; }
+
+  .dir-b .cta {
+    width: 100%;
+    padding: 13px;
+    border-radius: 12px;
+    background: #3B82F6;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+  }
+
+  .dir-b .content-row { margin: 14px 24px 0; display: flex; gap: 10px; }
+
+  .dir-b .content-tile {
+    flex: 1;
+    background: white;
+    border-radius: 14px;
+    padding: 16px 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    border: 1px solid #E2E8F0;
+    text-align: center;
+  }
+
+  .dir-b .content-tile .icon { font-size: 28px; margin-bottom: 6px; display: block; }
+  .dir-b .content-tile .name { font-size: 12px; font-weight: 600; color: #1E293B; }
+  .dir-b .content-tile .meta { font-size: 10px; color: #94A3B8; margin-top: 2px; }
+
+  .dir-b .progress-row { margin: 14px 24px 0; display: flex; gap: 10px; }
+
+  .dir-b .progress-tile {
+    flex: 1;
+    background: white;
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    border: 1px solid #E2E8F0;
+  }
+
+  .dir-b .progress-tile .label { font-size: 10px; color: #94A3B8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .dir-b .progress-tile .val { font-size: 24px; font-weight: 700; color: #1E293B; margin-top: 2px; }
+  .dir-b .progress-tile .detail { font-size: 11px; color: #94A3B8; margin-top: 2px; }
+
+  .dir-b .bar-track { height: 6px; background: #E2E8F0; border-radius: 3px; margin-top: 8px; overflow: hidden; }
+  .dir-b .bar-fill { height: 100%; background: #3B82F6; border-radius: 3px; }
+
+  .dir-b .bottom-nav {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 24px 16px;
+    border-top: 1px solid #E2E8F0;
+  }
+
+  .dir-b .nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 9px; color: #94A3B8; font-weight: 500; }
+  .dir-b .nav-item.active { color: #3B82F6; }
+
+  /* ======== DIRECTION C: Dark Luxe ======== */
+  .dir-c {
+    width: 100%;
+    height: 100%;
+    background: #171717;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .dir-c .header {
+    padding: 22px 24px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .dir-c .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    color: #FAFAFA;
+    font-weight: 400;
+  }
+
+  .dir-c .header .sub { font-size: 13px; color: #737373; margin-top: 2px; }
+
+  .dir-c .badge {
+    background: linear-gradient(135deg, #D4A853, #C49A42);
+    color: #171717;
+    padding: 5px 12px;
+    border-radius: 16px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .dir-c .main-card {
+    margin: 16px 24px 0;
+    background: #262626;
+    border-radius: 18px;
+    padding: 20px;
+    border: 1px solid #333;
+  }
+
+  .dir-c .card-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #737373;
+    margin-bottom: 10px;
+  }
+
+  .dir-c .timer-row { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
+
+  .dir-c .timer-circle {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #1F1F1F;
+    border: 3px solid #D4A853;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: #FAFAFA;
+  }
+
+  .dir-c .timer-info .primary { font-size: 15px; font-weight: 500; color: #E5E5E5; }
+  .dir-c .timer-info .secondary { font-size: 12px; color: #737373; margin-top: 2px; }
+
+  .dir-c .cta {
+    width: 100%;
+    padding: 13px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #D4A853, #C49A42);
+    color: #171717;
+    font-size: 14px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+  }
+
+  .dir-c .content-row { margin: 14px 24px 0; display: flex; gap: 10px; }
+
+  .dir-c .content-tile {
+    flex: 1;
+    background: #262626;
+    border-radius: 14px;
+    padding: 16px 14px;
+    border: 1px solid #333;
+    text-align: center;
+  }
+
+  .dir-c .content-tile .icon { font-size: 28px; margin-bottom: 6px; display: block; }
+  .dir-c .content-tile .name { font-size: 12px; font-weight: 600; color: #E5E5E5; }
+  .dir-c .content-tile .meta { font-size: 10px; color: #737373; margin-top: 2px; }
+
+  .dir-c .progress-row { margin: 14px 24px 0; display: flex; gap: 10px; }
+
+  .dir-c .progress-tile {
+    flex: 1;
+    background: #262626;
+    border-radius: 14px;
+    padding: 14px;
+    border: 1px solid #333;
+  }
+
+  .dir-c .progress-tile .label { font-size: 10px; color: #737373; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .dir-c .progress-tile .val { font-family: 'Playfair Display', serif; font-size: 24px; color: #D4A853; margin-top: 2px; }
+  .dir-c .progress-tile .detail { font-size: 11px; color: #525252; margin-top: 2px; }
+
+  .dir-c .dot-row { display: flex; gap: 5px; margin-top: 8px; }
+  .dir-c .dot { width: 8px; height: 8px; border-radius: 50%; background: #333; }
+  .dir-c .dot.done { background: #D4A853; }
+  .dir-c .dot.now { background: #E5E5E5; box-shadow: 0 0 0 2px rgba(212,168,83,0.3); }
+
+  .dir-c .bottom-nav {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 24px 16px;
+    border-top: 1px solid #262626;
+  }
+
+  .dir-c .nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 9px; color: #525252; font-weight: 500; }
+  .dir-c .nav-item.active { color: #D4A853; }
+</style>
+</head>
+<body>
+  <div class="concept-label">CONCEPT 3 — VISUAL DIRECTIONS · Same Layout · Three Moods from Moodboard</div>
+
+  <!-- DIRECTION A: Earthy Warmth -->
+  <div class="direction-row">
+    <div class="direction-group">
+      <span class="direction-label">Direction A — Earthy Warmth</span>
+      <p class="direction-sublabel">Terracotta, cream, sage. Organic textures, rounded shapes. Feels like a warm blanket — grounded and safe.</p>
+      <div class="ipad-frame">
+        <div class="dir-a">
+          <div class="header">
+            <div>
+              <h1>Good morning, John</h1>
+              <p class="sub">Day 5 of your light therapy</p>
+            </div>
+            <div class="badge">Day 5</div>
+          </div>
+
+          <div class="main-card">
+            <p class="card-label">Today's Session</p>
+            <div class="timer-row">
+              <div class="timer-circle">30:00</div>
+              <div class="timer-info">
+                <p class="primary">30 minutes · White light</p>
+                <p class="secondary">Best time: 8–10 AM</p>
+              </div>
+            </div>
+            <button class="cta">Begin Session →</button>
+          </div>
+
+          <div class="content-row">
+            <div class="content-tile"><span class="icon">📺</span><p class="name">Netflix</p><p class="meta">Continue watching</p></div>
+            <div class="content-tile"><span class="icon">📰</span><p class="name">News</p><p class="meta">12 stories</p></div>
+            <div class="content-tile"><span class="icon">🎵</span><p class="name">Sounds</p><p class="meta">Ambient</p></div>
+          </div>
+
+          <div class="progress-row">
+            <div class="progress-tile">
+              <p class="label">This week</p>
+              <p class="val">5/7</p>
+              <p class="detail">sessions done</p>
+              <div class="dot-row">
+                <div class="dot done"></div><div class="dot done"></div><div class="dot done"></div>
+                <div class="dot done"></div><div class="dot done"></div><div class="dot now"></div><div class="dot"></div>
+              </div>
+            </div>
+            <div class="progress-tile">
+              <p class="label">Treatment</p>
+              <p class="val">36%</p>
+              <p class="detail">5 of 14 days</p>
+              <div style="margin-top:8px;height:6px;background:#EDE6DF;border-radius:3px;overflow:hidden">
+                <div style="width:36%;height:100%;background:linear-gradient(90deg,#8BA888,#6E9A6B);border-radius:3px"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bottom-nav">
+            <div class="nav-item active"><span>☀️</span>Home</div>
+            <div class="nav-item"><span>📊</span>Progress</div>
+            <div class="nav-item"><span>📺</span>Content</div>
+            <div class="nav-item"><span>⚙️</span>Settings</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIRECTION B: Soft Clinical -->
+    <div class="direction-group">
+      <span class="direction-label">Direction B — Soft Clinical</span>
+      <p class="direction-sublabel">Clean blues, precise spacing, quiet confidence. Feels like a world-class hospital app. Trustworthy, modern, smart.</p>
+      <div class="ipad-frame">
+        <div class="dir-b">
+          <div class="header">
+            <div>
+              <h1>Good morning, John</h1>
+              <p class="sub">Day 5 of your light therapy</p>
+            </div>
+            <div class="badge">Day 5</div>
+          </div>
+
+          <div class="main-card">
+            <p class="card-label">Today's Session</p>
+            <div class="timer-row">
+              <div class="timer-circle">30:00</div>
+              <div class="timer-info">
+                <p class="primary">30 minutes · White light</p>
+                <p class="secondary">Best time: 8–10 AM</p>
+              </div>
+            </div>
+            <button class="cta">Begin Session →</button>
+          </div>
+
+          <div class="content-row">
+            <div class="content-tile"><span class="icon">📺</span><p class="name">Netflix</p><p class="meta">Continue watching</p></div>
+            <div class="content-tile"><span class="icon">📰</span><p class="name">News</p><p class="meta">12 stories</p></div>
+            <div class="content-tile"><span class="icon">🎵</span><p class="name">Sounds</p><p class="meta">Ambient</p></div>
+          </div>
+
+          <div class="progress-row">
+            <div class="progress-tile">
+              <p class="label">This week</p>
+              <p class="val">5/7</p>
+              <p class="detail">sessions done</p>
+              <div class="bar-track"><div class="bar-fill" style="width:71%"></div></div>
+            </div>
+            <div class="progress-tile">
+              <p class="label">Treatment</p>
+              <p class="val">36%</p>
+              <p class="detail">5 of 14 days</p>
+              <div class="bar-track"><div class="bar-fill" style="width:36%"></div></div>
+            </div>
+          </div>
+
+          <div class="bottom-nav">
+            <div class="nav-item active"><span>☀️</span>Home</div>
+            <div class="nav-item"><span>📊</span>Progress</div>
+            <div class="nav-item"><span>📺</span>Content</div>
+            <div class="nav-item"><span>⚙️</span>Settings</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIRECTION C: Dark Luxe -->
+    <div class="direction-group">
+      <span class="direction-label">Direction C — Dark Luxe</span>
+      <p class="direction-sublabel">Dark tones, gold accents, editorial serif type. Feels premium and calm — like a luxury wellness brand. Quiet confidence.</p>
+      <div class="ipad-frame">
+        <div class="dir-c">
+          <div class="header">
+            <div>
+              <h1>Good morning, John</h1>
+              <p class="sub">Day 5 of your light therapy</p>
+            </div>
+            <div class="badge">Day 5</div>
+          </div>
+
+          <div class="main-card">
+            <p class="card-label">Today's Session</p>
+            <div class="timer-row">
+              <div class="timer-circle">30:00</div>
+              <div class="timer-info">
+                <p class="primary">30 minutes · White light</p>
+                <p class="secondary">Best time: 8–10 AM</p>
+              </div>
+            </div>
+            <button class="cta">Begin Session →</button>
+          </div>
+
+          <div class="content-row">
+            <div class="content-tile"><span class="icon">📺</span><p class="name">Netflix</p><p class="meta">Continue watching</p></div>
+            <div class="content-tile"><span class="icon">📰</span><p class="name">News</p><p class="meta">12 stories</p></div>
+            <div class="content-tile"><span class="icon">🎵</span><p class="name">Sounds</p><p class="meta">Ambient</p></div>
+          </div>
+
+          <div class="progress-row">
+            <div class="progress-tile">
+              <p class="label">This week</p>
+              <p class="val">5/7</p>
+              <p class="detail">sessions done</p>
+              <div class="dot-row">
+                <div class="dot done"></div><div class="dot done"></div><div class="dot done"></div>
+                <div class="dot done"></div><div class="dot done"></div><div class="dot now"></div><div class="dot"></div>
+              </div>
+            </div>
+            <div class="progress-tile">
+              <p class="label">Treatment</p>
+              <p class="val">36%</p>
+              <p class="detail">5 of 14 days</p>
+              <div style="margin-top:8px;height:6px;background:#333;border-radius:3px;overflow:hidden">
+                <div style="width:36%;height:100%;background:linear-gradient(90deg,#D4A853,#C49A42);border-radius:3px"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bottom-nav">
+            <div class="nav-item active"><span>☀️</span>Home</div>
+            <div class="nav-item"><span>📊</span>Progress</div>
+            <div class="nav-item"><span>📺</span>Content</div>
+            <div class="nav-item"><span>⚙️</span>Settings</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

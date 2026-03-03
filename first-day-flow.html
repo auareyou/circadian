@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Circadian — First Day Flow</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #0D0D12;
+    color: #E8E4DF;
+    padding: 40px 20px;
+    min-height: 100vh;
+  }
+
+  .header {
+    max-width: 900px;
+    margin: 0 auto 48px;
+    text-align: center;
+  }
+  .header h1 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+  .header p {
+    font-size: 14px;
+    color: #888;
+  }
+
+  .legend {
+    max-width: 900px;
+    margin: 0 auto 40px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #999;
+  }
+  .legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  .flow {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  /* Vertical connector line */
+  .flow::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, #2A2A35, #F5A623 5%, #F5A623 95%, #2A2A35);
+    transform: translateX(-50%);
+    z-index: 0;
+  }
+
+  .phase {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 16px;
+  }
+
+  .phase-label {
+    text-align: center;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .phase-label span {
+    background: #1A1A24;
+    border: 1px solid #333;
+    padding: 6px 20px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #F5A623;
+    display: inline-block;
+  }
+
+  .node {
+    background: #16161E;
+    border: 1px solid #2A2A35;
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 520px;
+    margin: 0 auto 12px;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+  .node:hover {
+    border-color: #444;
+  }
+
+  .node-type {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .type-physical { background: #1E3A2F; color: #4ADE80; }
+  .type-screen { background: #1E2A3A; color: #60A5FA; }
+  .type-input { background: #3A2A1E; color: #F5A623; }
+  .type-action { background: #2E1E3A; color: #C084FC; }
+  .type-system { background: #3A1E2E; color: #FB7185; }
+  .type-optional { background: #1E3A3A; color: #67E8F9; }
+
+  .node h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+  .node p {
+    font-size: 13px;
+    color: #999;
+    line-height: 1.5;
+  }
+
+  .node-note {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: #1C1C26;
+    border-left: 3px solid #F5A623;
+    border-radius: 0 8px 8px 0;
+    font-size: 12px;
+    color: #BBB;
+    line-height: 1.5;
+  }
+  .node-note strong {
+    color: #F5A623;
+  }
+
+  .node-design {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: #1A1E2C;
+    border-left: 3px solid #60A5FA;
+    border-radius: 0 8px 8px 0;
+    font-size: 12px;
+    color: #8AB4F8;
+    line-height: 1.5;
+  }
+
+  .node-hooked {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: #2A1A2C;
+    border-left: 3px solid #C084FC;
+    border-radius: 0 8px 8px 0;
+    font-size: 12px;
+    color: #D4A5FF;
+    line-height: 1.5;
+  }
+
+  .data-grid {
+    margin-top: 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  .data-item {
+    font-size: 11px;
+    color: #888;
+    padding: 5px 8px;
+    background: #1A1A24;
+    border-radius: 6px;
+    border: 1px solid #222;
+  }
+  .data-item.conditional {
+    border-color: #F5A62344;
+    color: #C4A060;
+  }
+  .data-item.conditional::before {
+    content: '↳ ';
+    color: #F5A623;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #666;
+    margin-top: 12px;
+    margin-bottom: 4px;
+    padding-left: 4px;
+  }
+
+  .connector-label {
+    text-align: center;
+    padding: 8px 0;
+  }
+  .connector-label span {
+    font-size: 11px;
+    color: #666;
+    background: #0D0D12;
+    padding: 2px 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .branch {
+    display: flex;
+    gap: 12px;
+    max-width: 700px;
+    margin: 0 auto 12px;
+  }
+  .branch .node {
+    flex: 1;
+    max-width: none;
+  }
+
+  .dot-connector {
+    text-align: center;
+    padding: 6px 0;
+  }
+  .dot-connector span {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: #F5A623;
+    border-radius: 50%;
+  }
+
+  .summary-box {
+    max-width: 520px;
+    margin: 32px auto 0;
+    background: #16161E;
+    border: 1px dashed #333;
+    border-radius: 16px;
+    padding: 24px;
+  }
+  .summary-box h3 {
+    font-size: 14px;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid #1E1E28;
+    font-size: 13px;
+  }
+  .summary-row:last-child { border: none; }
+  .summary-row .label { color: #888; }
+  .summary-row .value { color: #fff; font-weight: 500; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>First Day Flow</h1>
+  <p>Day 0 — Device arrives, no light session. Capitalize on newness energy.</p>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#4ADE80"></div>Physical / Offline</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#60A5FA"></div>Screen / UI</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#F5A623"></div>User Input / Data</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#C084FC"></div>System Action</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#FB7185"></div>Critical Moment</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#67E8F9"></div>Optional Step</div>
+</div>
+
+<div class="flow">
+
+  <!-- ============ PHASE 1: UNBOXING ============ -->
+  <div class="phase">
+    <div class="phase-label"><span>Phase 1 — Receive &amp; Unbox</span></div>
+
+    <div class="node">
+      <div class="node-type type-physical">Physical</div>
+      <h3>Patient Receives Box</h3>
+      <p>Package arrives with the light therapy device, iPad (pre-loaded with app), and printed instructions.</p>
+      <div class="node-note">
+        <strong>Design note:</strong> Include printed quick-start card in the box. Addresses fear-of-technology barrier for older/less tech-savvy patients. The card should mirror the onboarding flow — same language, same steps — so nothing feels unfamiliar.
+      </div>
+      <div class="node-hooked">
+        <strong>Hooked — External Trigger:</strong> The physical box is the first trigger. Make unboxing feel like opening something special, not medical equipment. The printed card is a fallback trigger if the screen feels intimidating.
+      </div>
+    </div>
+
+    <div class="dot-connector"><span></span></div>
+
+    <div class="node">
+      <div class="node-type type-physical">Physical</div>
+      <h3>Open Box &amp; Find Materials</h3>
+      <p>Patient opens the box, finds the device, iPad, cable, and printed quick-start card. Card says: "Start here."</p>
+      <div class="node-design">
+        <strong>UX:</strong> The printed card should have 3–4 steps max. Large type. Illustrations, not photos. Arrow pointing to "Turn on iPad" as the single next action.
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ PHASE 2: ONBOARDING ============ -->
+  <div class="phase">
+    <div class="phase-label"><span>Phase 2 — Onboarding</span></div>
+
+    <div class="connector-label"><span>Patient turns on iPad → App launches</span></div>
+
+    <div class="node">
+      <div class="node-type type-screen">Screen</div>
+      <h3>Welcome Screen</h3>
+      <p>Warm, calm welcome. One sentence about what this is. Single button: "Let's get started."</p>
+      <div class="node-hooked">
+        <strong>Hooked — Investment phase begins:</strong> Every tap the patient makes during setup is a micro-investment. The more they put in now, the more committed they become to completing the trial. Keep each step tiny so the investment accumulates without friction.
+      </div>
+    </div>
+
+    <div class="dot-connector"><span></span></div>
+
+    <div class="node">
+      <div class="node-type type-screen">Screen</div>
+      <h3>Onboarding: What to Expect</h3>
+      <p>3–4 glanceable cards (swipe or auto-advance) that cover:</p>
+      <div class="data-grid" style="grid-template-columns: 1fr;">
+        <div class="data-item">① This is a daily morning routine — same time, every day</div>
+        <div class="data-item">② Each session is ~30 min of light while you watch something you enjoy</div>
+        <div class="data-item">③ Good sleep makes treatment work better — no naps, stick to your window</div>
+        <div class="data-item">④ We'll guide you every step of the way</div>
+      </div>
+      <div class="node-note">
+        <strong>Key principle:</strong> Onboarding mirrors the printed instructions — same content, less reading. Designed to be understood at a glance. No walls of text.
+      </div>
+      <div class="node-design">
+        <strong>UX:</strong> Each card = one illustration + one sentence. Progress dots at bottom. Patient should spend ~15 seconds per card max.
+      </div>
+      <div class="node-hooked">
+        <strong>SuperBetter — Epic Meaning:</strong> Frame this as a quest the patient is choosing to undertake. They aren't "assigned treatment" — they're starting something that could meaningfully improve how they feel. Give the daily routine a sense of purpose, not obligation.
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ PHASE 3: QUESTIONNAIRE ============ -->
+  <div class="phase">
+    <div class="phase-label"><span>Phase 3 — Baseline Questionnaire</span></div>
+
+    <div class="connector-label"><span>Transition: "A few quick questions so we can personalize your schedule"</span></div>
+
+    <div class="node">
+      <div class="node-type type-input">User Input</div>
+      <h3>A. Work Schedule</h3>
+      <div class="data-grid" style="grid-template-columns: 1fr;">
+        <div class="data-item">How many days per week do you work?</div>
+      </div>
+      <div class="node-design">
+        <strong>UX:</strong> Large number selector or simple slider. One question per screen to keep cognitive load near zero.
+      </div>
+    </div>
+
+    <div class="dot-connector"><span></span></div>
+
+    <div class="node">
+      <div class="node-type type-input">User Input</div>
+      <h3>B. Workday Sleep</h3>
+      <p>Typical sleep pattern on days the patient works.</p>
+      <div class="data-grid">
+        <div class="data-item">Bedtime (get into bed)</div>
+        <div class="data-item">Try-to-sleep time</div>
+        <div class="data-item">Minutes to fall asleep</div>
+        <div class="data-item">Wake-up time</div>
+        <div class="data-item">Minutes to get out of bed</div>
+        <div class="data-item">Use alarm clock? (Y/N)</div>
+        <div class="data-item conditional">Wake before alarm? (if alarm = yes)</div>
+      </div>
+    </div>
+
+    <div class="dot-connector"><span></span></div>
+
+    <div class="node">
+      <div class="node-type type-input">User Input</div>
+      <h3>C. Free Day Sleep</h3>
+      <p>Typical sleep pattern on days off.</p>
+      <div class="data-grid">
+        <div class="data-item">Bedtime (get into bed)</div>
+        <div class="data-item">Try-to-sleep time</div>
+        <div class="data-item">Minutes to fall asleep</div>
+        <div class="data-item">Wake-up time</div>
+        <div class="data-item">Minutes to get out of bed</div>
+        <div class="data-item">Use alarm clock? (Y/N)</div>
+        <div class="data-item">Free to choose sleep/wake times?</div>
+        <div class="data-item conditional">What prevents free choice? (if no)</div>
+      </div>
+    </div>
+
+    <div class="dot-connector"><span></span></div>
+
+    <div class="node">
+      <div class="node-type type-input">User Input</div>
+      <h3>D. Sleep Habits</h3>
+      <div class="data-grid">
+        <div class="data-item">Minutes awake during the night (typical)</div>
+        <div class="data-item">Typical nap duration (min, 0 if none)</div>
+      </div>
+    </div>
+
+    <div class="dot-connector"><span></span></div>
+
+    <div class="node">
+      <div class="node-type type-input">User Input</div>
+      <h3>E. Work Details</h3>
+      <div class="data-grid">
+        <div class="data-item">Shift worker? (Y/N)</div>
+        <div class="data-item">Work start time</div>
+        <div class="data-item">Work end time</div>
+        <div class="data-item">Schedule flexibility (0–4 scale)</div>
+        <div class="data-item">Commute type (Enclosed / Outside / None)</div>
+        <div class="data-item">Commute to work (min)</div>
+        <div class="data-item">Commute from work (min)</div>
+      </div>
+    </div>
+
+    <div class="dot-connector"><span></span></div>
+
+    <div class="node">
+      <div class="node-type type-input">User Input</div>
+      <h3>F. Outdoor Time</h3>
+      <div class="data-grid">
+        <div class="data-item">Hours outdoors on workdays</div>
+        <div class="data-item">Hours outdoors on free days</div>
+      </div>
+    </div>
+
+    <div class="dot-connector"><span></span></div>
+
+    <div class="node">
+      <div class="node-type type-input">User Input</div>
+      <h3>G. Stimulants &amp; Substances</h3>
+      <div class="data-grid">
+        <div class="data-item">Coffee (cups/day)</div>
+        <div class="data-item">Tea (cups/day)</div>
+        <div class="data-item">Soft drinks (cans/day)</div>
+        <div class="data-item">Beer (glasses/day)</div>
+        <div class="data-item">Wine (glasses/day)</div>
+        <div class="data-item">Liquor (drinks/day)</div>
+        <div class="data-item">Cigarettes (per day)</div>
+        <div class="data-item">Sleep medication (doses/week)</div>
+      </div>
+      <div class="node-hooked">
+        <strong>Hooked — Variable Reward anticipation:</strong> After this last questionnaire section, the patient gets something back — their personalized schedule. Framing the questionnaire as "tell us about you so we can build your plan" turns data entry into an investment toward a reward.
+      </div>
+    </div>
+
+    <div class="dot-connector"><span></span></div>
+
+    <div class="node">
+      <div class="node-type type-system">System</div>
+      <h3>Calculate Recommended Window</h3>
+      <p>System processes baseline data to determine optimal light therapy window and wake time recommendation.</p>
+      <div class="node-design">
+        <strong>UX:</strong> Brief loading moment — "Building your schedule..." — gives weight to the personalization. Don't make it instant; a 2–3 second pause signals the system is doing real work with their answers.
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ PHASE 4: SET ALARM ============ -->
+  <div class="phase">
+    <div class="phase-label"><span>Phase 4 — Set Tomorrow's Alarm</span></div>
+
+    <div class="node">
+      <div class="node-type type-screen">Screen</div>
+      <h3>Your Recommended Window</h3>
+      <p>Show the patient their personalized light therapy window for tomorrow. Clear, large time display. Explain briefly why this window matters.</p>
+      <div class="node-hooked">
+        <strong>SuperBetter — Power-up:</strong> The recommended window is the patient's first "power-up." It's personal, it's based on their data, and it gives them a concrete action for tomorrow. This is the moment the trial stops being abstract and becomes real.
+      </div>
+    </div>
+
+    <div class="dot-connector"><span></span></div>
+
+    <div class="node">
+      <div class="node-type type-action">User Action</div>
+      <h3>Set Alarm for Tomorrow</h3>
+      <p>Patient confirms or adjusts the suggested wake-up time. Single tap to set alarm. This is the commitment moment.</p>
+      <div class="node-note">
+        <strong>Critical:</strong> This is the key action of Day 0. Everything before builds to this. Everything after is bonus. The alarm is what bridges today's setup to tomorrow's first session.
+      </div>
+      <div class="node-hooked">
+        <strong>Hooked — Investment:</strong> Setting the alarm is the patient's biggest investment of Day 0. They're making a commitment to future action. This stored value increases the likelihood they follow through tomorrow.
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ PHASE 5: ENTERTAINMENT ============ -->
+  <div class="phase">
+    <div class="phase-label"><span>Phase 5 — Connect Entertainment (Optional)</span></div>
+
+    <div class="node">
+      <div class="node-type type-optional">Optional</div>
+      <h3>Connect Entertainment Apps</h3>
+      <p>Invite the patient to log into streaming/social apps (Netflix, YouTube, Instagram, Facebook, etc.) so content is ready for tomorrow's session.</p>
+      <div class="data-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+        <div class="data-item" style="text-align:center;">Netflix</div>
+        <div class="data-item" style="text-align:center;">YouTube</div>
+        <div class="data-item" style="text-align:center;">Instagram</div>
+        <div class="data-item" style="text-align:center;">Facebook</div>
+        <div class="data-item" style="text-align:center;">Spotify</div>
+        <div class="data-item" style="text-align:center;">Other</div>
+      </div>
+      <div class="node-note">
+        <strong>Design note:</strong> Clearly marked as optional. "You can always do this later." If skipped, send a push notification later that evening reminding them to connect before bed.
+      </div>
+      <div class="node-hooked">
+        <strong>Hooked — Reducing friction for the Action phase:</strong> If entertainment is pre-loaded, tomorrow's session has one less barrier. The patient wakes up, sits down, and content is already there. The easier the action, the more likely the habit forms.
+      </div>
+    </div>
+
+    <div class="dot-connector"><span></span></div>
+
+    <div class="node">
+      <div class="node-type type-system">System</div>
+      <h3>Schedule Reminder (if skipped)</h3>
+      <p>If patient skips entertainment setup, schedule a push notification for later that evening: "Quick tip: log into your favorite app before bed so it's ready for tomorrow morning."</p>
+    </div>
+  </div>
+
+  <!-- ============ PHASE 6: DASHBOARD ============ -->
+  <div class="phase">
+    <div class="phase-label"><span>Phase 6 — Dashboard Empty State</span></div>
+
+    <div class="node">
+      <div class="node-type type-screen">Screen</div>
+      <h3>Dashboard — Empty State</h3>
+      <p>Patient lands on the main dashboard for the first time. Empty but not bare — it previews what's coming.</p>
+      <div class="data-grid" style="grid-template-columns: 1fr;">
+        <div class="data-item">Score area → placeholder: "Your score will appear after your first session"</div>
+        <div class="data-item">Session tracker → Day 1 highlighted, rest empty: "Your streak starts tomorrow"</div>
+        <div class="data-item">Tomorrow's session card → Time + "Your first session is set for [time]"</div>
+        <div class="data-item">Progress area → gentle preview of what gets filled over time</div>
+      </div>
+      <div class="node-note">
+        <strong>Key principle:</strong> The empty state should make the patient feel oriented, not overwhelmed. They should think "I know exactly what happens next" — not "there's so much to fill in."
+      </div>
+      <div class="node-design">
+        <strong>UX:</strong> The dashboard should feel like a calm room they've just walked into, with labeled spots for things that will arrive. Think hotel room with your name on the door, not an empty spreadsheet.
+      </div>
+      <div class="node-hooked">
+        <strong>SuperBetter — Quest preview:</strong> The empty dashboard is the quest map before the journey begins. The patient can see the path laid out. Seeing the empty tracker with Day 1 highlighted creates anticipation — a desire to "start filling it in." This is the variable reward hook: what will my score be? What will my streak look like?
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ DONE ============ -->
+  <div class="phase">
+    <div class="phase-label"><span>Day 0 Complete</span></div>
+
+    <div class="node" style="border-color: #4ADE8044; background: #121A16;">
+      <div class="node-type type-physical">Complete</div>
+      <h3>First Day Done</h3>
+      <p>Patient has completed setup. Alarm is set. They know what tomorrow looks like. The app is quiet until morning.</p>
+      <div class="node-hooked">
+        <strong>Hooked — Trigger loaded:</strong> The alarm is the internal trigger for tomorrow. The entertainment apps remove friction from the action. The personalized schedule is the variable reward waiting. The questionnaire answers and alarm setting are the investment. The full Hook cycle is primed and ready for Day 1.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Summary -->
+<div class="summary-box">
+  <h3>Day 0 — Summary</h3>
+  <div class="summary-row"><span class="label">Light therapy session</span><span class="value">None (starts Day 1)</span></div>
+  <div class="summary-row"><span class="label">Estimated setup time</span><span class="value">10–15 minutes</span></div>
+  <div class="summary-row"><span class="label">Data collected</span><span class="value">Baseline survey (7 sections, ~30 fields)</span></div>
+  <div class="summary-row"><span class="label">Key commitment</span><span class="value">Alarm set for first session</span></div>
+  <div class="summary-row"><span class="label">Optional step</span><span class="value">Connect entertainment apps</span></div>
+  <div class="summary-row"><span class="label">First trigger for Day 1</span><span class="value">Alarm goes off at recommended time</span></div>
+</div>
+
+<div style="max-width: 900px; margin: 40px auto 0; padding: 24px; background: #16161E; border: 1px solid #2A2A35; border-radius: 16px;">
+  <h3 style="font-size: 14px; color: #C084FC; margin-bottom: 12px;">Edge Cases &amp; Considerations</h3>
+  <div style="font-size: 13px; color: #999; line-height: 1.8;">
+    <p style="margin-bottom: 8px;"><strong style="color: #ccc;">What if the patient is too tired to finish setup?</strong> — Save progress. Let them resume. Show a clear "pick up where you left off" screen. The questionnaire should auto-save after each section.</p>
+    <p style="margin-bottom: 8px;"><strong style="color: #ccc;">What if they get the device in the evening?</strong> — Fine. The alarm still gets set for tomorrow. Remind them to charge the iPad overnight.</p>
+    <p style="margin-bottom: 8px;"><strong style="color: #ccc;">What if they skip the questionnaire entirely?</strong> — Don't let them. This data is required for the clinical trial. But break it into small enough pieces that it never feels heavy.</p>
+    <p><strong style="color: #ccc;">What if they struggle with the technology?</strong> — The printed card is the safety net. It should be good enough to get them from "box open" to "alarm set" without the iPad confusing them.</p>
+  </div>
+</div>
+
+<div style="text-align: center; padding: 48px 0 24px; color: #444; font-size: 11px;">
+  Circadian — First Day Flow — Day 0
+</div>
+
+</body>
+</html>
