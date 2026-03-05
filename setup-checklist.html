@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setup Checklist — Circadian</title>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes scaleBounce {
+      0% { transform: scale(0.6); }
+      50% { transform: scale(1.12); }
+      100% { transform: scale(1); }
+    }
+    @keyframes checkDraw {
+      from { stroke-dashoffset: 24; }
+      to { stroke-dashoffset: 0; }
+    }
+    @keyframes ringPulseComplete {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+      100% { transform: scale(1); }
+    }
+    @keyframes completionCheckDraw {
+      from { stroke-dashoffset: 36; }
+      to { stroke-dashoffset: 0; }
+    }
+    @keyframes buttonFadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel" data-type="module">
+const { useState, useEffect, useRef } = React;
+
+// ═══════════════════════════════════════════════════════════════════
+// CIRCADIAN OS — Setup Checklist (Satisfying Completion Redesign)
+// iPad Landscape · iOS 26 Liquid Glass · Apple Health Color System
+// ═══════════════════════════════════════════════════════════════════
+
+const ios = {
+  blue:       "#007AFF",
+  blueSoft:   "rgba(0, 122, 255, 0.10)",
+  green:      "#34C759",
+  greenSoft:  "rgba(52, 199, 89, 0.10)",
+  orange:     "#FF9500",
+  orangeSoft: "rgba(255, 149, 0, 0.08)",
+  cyan:       "#32ADE6",
+  cyanSoft:   "rgba(50, 173, 230, 0.10)",
+  gray:       "#8E8E93",
+  gray3:      "#C7C7CC",
+  gray4:      "#D1D1D6",
+  gray5:      "#E5E5EA",
+  gray6:      "#F2F2F7",
+};
+
+const t = {
+  bg: "#FFFFFF",
+  label: "#000000",
+  secondaryLabel: "#3C3C43",
+  tertiaryLabel: "#3C3C4399",
+  font: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", system-ui, sans-serif',
+};
+
+const brandGradient = "linear-gradient(135deg, #1452E2, #0091FF)";
+
+const STEPS = [
+  { id: "sleep", label: "About your sleep", description: "~2 min", required: true },
+  { id: "schedule", label: "Set your schedule", description: "~1 min", required: true },
+  { id: "position", label: "Test light position", description: "~1 min", required: true },
+  { id: "apps", label: "Connect entertainment", description: "Optional", required: false },
+];
+
+function getDynamicCopy(completedCount, requiredDone, allDone) {
+  if (allDone) return { title: "You're all set", subtitle: "Your device is ready" };
+  if (requiredDone) return { title: "Almost there", subtitle: "You can also connect entertainment apps" };
+  if (completedCount === 0) return { title: "Complete your setup", subtitle: "Finish these steps to start your first session" };
+  const remaining = STEPS.length - completedCount;
+  return { title: "Great progress", subtitle: `${remaining} step${remaining !== 1 ? "s" : ""} remaining` };
+}
+
+const RING_SIZE = 120;
+const RING_STROKE = 8;
+const RING_RADIUS = (RING_SIZE - RING_STROKE) / 2;
+const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
+
+function ProgressRing({ completedCount, total, allDone }) {
+  const progress = completedCount / total;
+  const offset = RING_CIRCUMFERENCE * (1 - progress);
+  const glowOpacity = 0.1 + progress * 0.35;
+  const glowSize = 4 + progress * 12;
+
+  return (
+    <div style={{
+      position: "relative", width: RING_SIZE, height: RING_SIZE,
+      animation: allDone ? "ringPulseComplete 0.8s cubic-bezier(0.22, 1, 0.36, 1)" : "none",
+    }}>
+      <svg width={RING_SIZE} height={RING_SIZE} viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`}
+        style={{
+          transform: "rotate(-90deg)",
+          filter: progress > 0 ? `drop-shadow(0 0 ${glowSize}px rgba(20, 82, 226, ${glowOpacity}))` : "none",
+          transition: "filter 0.6s ease",
+        }}>
+        <defs>
+          <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#1452E2" />
+            <stop offset="100%" stopColor="#0091FF" />
+          </linearGradient>
+        </defs>
+        <circle cx={RING_SIZE/2} cy={RING_SIZE/2} r={RING_RADIUS} fill="none"
+          stroke="rgba(118, 118, 128, 0.12)" strokeWidth={RING_STROKE} />
+        <circle cx={RING_SIZE/2} cy={RING_SIZE/2} r={RING_RADIUS} fill="none"
+          stroke="url(#ringGradient)" strokeWidth={RING_STROKE} strokeLinecap="round"
+          strokeDasharray={RING_CIRCUMFERENCE} strokeDashoffset={offset}
+          style={{ transition: "stroke-dashoffset 0.6s cubic-bezier(0.22, 1, 0.36, 1)" }} />
+      </svg>
+      <div style={{
+        position: "absolute", inset: 0, display: "flex", flexDirection: "column",
+        alignItems: "center", justifyContent: "center",
+      }}>
+        {allDone ? (
+          <svg width="40" height="40" viewBox="0 0 40 40">
+            <polyline points="12,21 18,27 28,15" stroke="#1452E2" strokeWidth="3.5"
+              strokeLinecap="round" strokeLinejoin="round" fill="none" strokeDasharray="36"
+              style={{ animation: "completionCheckDraw 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both" }} />
+          </svg>
+        ) : (
+          <>
+            <span style={{ fontFamily: t.font, fontSize: "39px", fontWeight: 600, color: t.label, lineHeight: 1 }}>
+              {completedCount}
+            </span>
+            <span style={{ fontFamily: t.font, fontSize: "15px", fontWeight: 400, color: t.secondaryLabel, lineHeight: 1, marginTop: "2px" }}>
+              of {total}
+            </span>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function StepRow({ step, index, completed, onToggle, entryDelay }) {
+  const [animating, setAnimating] = useState(false);
+  const prevCompleted = useRef(completed);
+
+  useEffect(() => {
+    if (completed && !prevCompleted.current) {
+      setAnimating(true);
+      const timer = setTimeout(() => setAnimating(false), 550);
+      prevCompleted.current = completed;
+      return () => clearTimeout(timer);
+    }
+    prevCompleted.current = completed;
+  }, [completed]);
+
+  return (
+    <div onClick={onToggle} style={{
+      display: "flex", alignItems: "center", gap: "14px", padding: "14px 16px",
+      cursor: "pointer", borderBottom: index < STEPS.length - 1 ? "1px solid #DFE3EA" : "none",
+      transition: "background 0.15s ease",
+      animation: `fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${entryDelay}s both`,
+      userSelect: "none",
+    }}
+      onMouseEnter={e => e.currentTarget.style.background = "rgba(0,0,0,0.02)"}
+      onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+      {/* Left circle */}
+      <div style={{
+        width: "36px", height: "36px", borderRadius: "50%", flexShrink: 0,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        background: completed ? brandGradient : "transparent",
+        border: completed ? "none" : "2px solid #DFE3EA",
+        transition: "all 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
+        animation: animating ? "scaleBounce 0.3s ease" : "none",
+      }}>
+        {completed ? (
+          <svg width="18" height="18" viewBox="0 0 18 18">
+            <polyline points="4,9.5 7.5,13 14,6" stroke="#FFFFFF" strokeWidth="2.2"
+              strokeLinecap="round" strokeLinejoin="round" fill="none" strokeDasharray="24"
+              style={{
+                animation: animating ? "checkDraw 0.25s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both" : "none",
+                strokeDashoffset: animating ? undefined : 0,
+              }} />
+          </svg>
+        ) : (
+          <span style={{ fontFamily: t.font, fontSize: "15px", fontWeight: 600, color: ios.gray }}>
+            {index + 1}
+          </span>
+        )}
+      </div>
+      {/* Text */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{
+          fontFamily: t.font, fontWeight: 600, fontSize: "15px",
+          color: completed ? t.secondaryLabel : t.label, lineHeight: 1.3,
+          transition: "color 0.3s ease",
+        }}>{step.label}</div>
+        <div style={{
+          fontFamily: t.font, fontWeight: 400, fontSize: "13px",
+          color: t.tertiaryLabel, lineHeight: 1.4, marginTop: "1px",
+        }}>{step.description}</div>
+      </div>
+      {/* Right */}
+      <div style={{ flexShrink: 0, display: "flex", alignItems: "center", gap: "8px" }}>
+        {!step.required && !completed && (
+          <span style={{
+            fontFamily: t.font, fontSize: "11px", fontWeight: 600, color: ios.gray,
+            background: ios.gray6, padding: "2px 8px", borderRadius: "4px",
+            textTransform: "uppercase", letterSpacing: "0.3px",
+          }}>Optional</span>
+        )}
+        {completed ? (
+          <span style={{ fontFamily: t.font, fontSize: "14px", fontWeight: 600, color: ios.green }}>Done</span>
+        ) : (
+          <svg width="8" height="14" viewBox="0 0 8 14" fill="none">
+            <path d="M1 1l6 6-6 6" stroke={ios.gray3} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function SetupChecklist() {
+  const [completed, setCompleted] = useState(new Set());
+
+  const toggle = (id) => {
+    setCompleted(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
+  const completedCount = completed.size;
+  const total = STEPS.length;
+  const requiredDone = STEPS.filter(s => s.required).every(s => completed.has(s.id));
+  const allDone = completedCount === total;
+  const optionalPending = requiredDone && !allDone;
+  const { title, subtitle } = getDynamicCopy(completedCount, requiredDone, allDone);
+
+  return (
+    <div style={{
+      width: "100vw", minHeight: "100vh", background: "#E5E5EA",
+      display: "flex", alignItems: "center", justifyContent: "center",
+      padding: "24px", fontFamily: t.font,
+    }}>
+      {/* iPad Landscape Frame */}
+      <div style={{
+        width: "100%", maxWidth: "980px", height: "640px", background: ios.gray6,
+        borderRadius: "24px", boxShadow: "0 4px 40px rgba(0,0,0,0.08), 0 1px 8px rgba(0,0,0,0.04)",
+        overflow: "hidden", position: "relative", display: "flex", flexDirection: "column",
+      }}>
+        {/* Status bar */}
+        <div style={{
+          display: "flex", justifyContent: "space-between", alignItems: "center",
+          padding: "10px 24px 0", flexShrink: 0, position: "relative", zIndex: 10,
+        }}>
+          <span style={{ fontFamily: t.font, fontSize: "14px", fontWeight: 600, color: t.label }}>9:41</span>
+          <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+            <svg width="16" height="12" viewBox="0 0 16 12">
+              <path d="M1.5 6.5C4 3.5 8 2 12 2c1.5 0 2.8.3 4 .8" stroke={t.label} strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.3" />
+              <path d="M4 9C5.5 7 8 6 10.5 6c1 0 2 .2 3 .5" stroke={t.label} strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.5" />
+              <circle cx="10" cy="11" r="1.5" fill={t.label} />
+            </svg>
+            <svg width="25" height="12" viewBox="0 0 25 12" fill={t.label}>
+              <rect x="0" y="0.5" width="22" height="11" rx="2.5" stroke={t.label} strokeWidth="1" fill="none" />
+              <rect x="23" y="3.5" width="2" height="5" rx="1" />
+              <rect x="2" y="2.5" width="16" height="7" rx="1.5" fill={ios.green} />
+            </svg>
+          </div>
+        </div>
+
+        {/* Full-bleed white card */}
+        <div style={{
+          position: "absolute", inset: "24px", borderRadius: "28px", background: t.bg,
+          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+          padding: "40px", zIndex: 5,
+        }}>
+          <div style={{ marginBottom: "24px", animation: "fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both" }}>
+            <ProgressRing completedCount={completedCount} total={total} allDone={allDone} />
+          </div>
+
+          <div style={{ textAlign: "center", marginBottom: "28px", animation: "fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both" }}>
+            <h1 style={{
+              fontFamily: t.font, fontWeight: 700, fontSize: "26px", color: t.label,
+              lineHeight: 1.2, letterSpacing: "-0.3px", marginBottom: "6px",
+            }}>{title}</h1>
+            <p style={{
+              fontFamily: t.font, fontWeight: 400, fontSize: "15px", color: t.secondaryLabel,
+              lineHeight: 1.4, opacity: 0.75,
+            }}>{subtitle}</p>
+          </div>
+
+          <div style={{
+            width: "100%", maxWidth: "420px", border: "1px solid #DFE3EA",
+            borderRadius: "8px", overflow: "hidden", marginBottom: "24px",
+          }}>
+            {STEPS.map((step, i) => (
+              <StepRow key={step.id} step={step} index={i} completed={completed.has(step.id)}
+                onToggle={() => toggle(step.id)} entryDelay={0.5 + i * 0.08} />
+            ))}
+          </div>
+
+          {requiredDone && (
+            <div style={{
+              display: "flex", flexDirection: "column", alignItems: "center", gap: "12px",
+              animation: "buttonFadeIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both",
+            }}>
+              <button style={{
+                padding: "14px 32px", background: brandGradient, border: "none", borderRadius: "14px",
+                fontFamily: t.font, fontSize: "17px", fontWeight: 600, color: "#FFFFFF", cursor: "pointer",
+                boxShadow: "0 4px 16px rgba(20, 82, 226, 0.3)", transition: "all 0.2s ease",
+              }}>Go to your first session</button>
+              {optionalPending && (
+                <button style={{
+                  padding: "8px 16px", background: "none", border: "none", fontFamily: t.font,
+                  fontSize: "15px", fontWeight: 500, color: t.secondaryLabel, cursor: "pointer", opacity: 0.7,
+                }}>Skip</button>
+              )}
+            </div>
+          )}
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "center", paddingBottom: "8px", flexShrink: 0, marginTop: "auto" }}>
+          <div style={{ width: "134px", height: "5px", borderRadius: "3px", background: "rgba(0,0,0,0.12)" }} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<SetupChecklist />);
+  </script>
+</body>
+</html>
